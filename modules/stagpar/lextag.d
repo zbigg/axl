@@ -1,0 +1,1 @@
+lextag.o: lextag.c

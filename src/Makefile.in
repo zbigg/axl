@@ -1,0 +1,106 @@
+######################################
+#
+# File		: Makefile.in
+# Id            : $Id: Makefile.in 1.3 04/05/22 20:40:51+02:00 zbigg@veinard.dom $
+# Author	: Zbigniew Zagorski <zzbigg@o2.pl>
+# Type		: GNU Make
+# Source type	: distribution
+#
+######################################
+#
+# Options
+#	DEBUG=1		compile with debug information (default)
+#	DEBUG=0		compile without debug information
+#	PROF=1		compile with debug information
+#	PROF=0		compile without debug information (default)
+#	INST_DIR=dir	use dir as instalation directory
+#			(default (/usr/lib).
+#
+# Targets:
+#    default	: Compile dynamic library.
+#    inst	: Install libary to default place (/usr/lib).
+#                 Require root access.
+#    static	: Compile static linked library.
+#    clean	: Remove all intermediate files .
+#    clean_all	: Remove all including libary and depandency files.
+#
+######################################
+
+# Default:  Compile with debugger info
+SUBDIRS=libxl stdaxl axl
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = ..
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+# use 'DESTDIR' from environment!
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+default : all
+
+doc:
+	$(MAKE) -C doc $@
+
+GENERATED_FILES = Makefile
+
+distclean:
+	-rm -f $(GENERATED_FILES)
+	@for SUB in $(SUBDIRS) ; do 					\
+	    [ -f $$SUB/Makefile ] || ./$(top_builddir)/config.status ;	\
+	    $(MAKE) -C $$SUB $@ || exit $$? ;  				\
+	done
+	-rm -f common/*.o core *.so *.a
+
+clean all clean_all inst depend install :
+	@for SUB in $(SUBDIRS) ; do					\
+	    [ -f $$SUB/Makefile ] || ./$(top_builddir)/config.status ;	\
+	    $(MAKE) -C $$SUB $@ || exit $$? ;				\
+	done
+
+STD_FILES=
+DIST_FILES=$(STD_FILES) $(SUBDIRS) $(EXTRA_DIST)
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/misc/mkdirs.sh
+
+distdir=@PACKAGE@-@VERSION@
+cur_distdir=$(distdir)/$(subdir)
+
+#
+# Keep Makefile recent
+#
+
+${top_builddir}/config.h: ${top_srcdir}/config.h.in
+	@echo Rebuilding config.h
+	(cd $(top_builddir) ; ./config.status ; )
+
+${top_srcdir}/configure  $(top_builddir)/config.status: ${top_srcdir}/configure.in
+	@echo Rebuilding configure
+	(cd ${top_srcdir}; autoconf ; )
+	(cd ${top_builddir}; ./config.status --recheck ; )
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd $(top_builddir) ; ./config.status ; )
+
+
+
+

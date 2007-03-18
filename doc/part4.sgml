@@ -1,0 +1,27 @@
+<!-- 							-->
+<!--   File:	part4.sgml				-->
+<!--							-->
+<!--   Id:	$Id: part4.sgml 1.5 04/02/24 01:39:32+01:00 zbigg@marl.(none) $					-->
+<!--							-->
+<!--   Purpose:  					-->
+<!--        	Part 3 of AXL Documentation 		-->
+<!--							-->
+<!--		AXL C API Reference 			-->
+<!--							-->
+<part>
+    <title>AXL API Reference</title>
+<partintro>
+    <para>
+    This section provides description of interface used to communicate between
+    application and AXL library. Functions described in this section are also used
+    in programming AXL extension modules.
+    </para>
+    <para>
+    ZMOD API is a part of libary used to load/manage dynamic link modules (DLL/SO).
+    </para>
+</partintro>
+    <!-- &api-obj;	-->
+    &xlang-api;
+    &zmod-api;
+    <!-- &old_axl_api_ref; -->
+</part>

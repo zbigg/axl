@@ -1,0 +1,31 @@
+#####################################
+# File	: makrules.in
+#
+# Author: Zbigniew Zagorski <zzbigg@o2.pl>
+#
+# Id    : $Id: makrules.in 1.1 03/10/16 00:02:54+02:00 zbigg@marl.(none) $
+#
+# Purpose:
+#		Useful rules to maintain project files:
+#			- Makefiles
+#			- configure and config.status
+#			- usage of *.d dependency files
+#
+######################################
+
+
+${top_builddir}/config.h: ${top_srcdir}/config.h.in
+	@echo Rebuilding ${top_builddir}/config.h
+	(cd $(top_builddir) ; ./config.status ; )
+
+${top_srcdir}/configure  $(top_builddir)/config.status: ${top_srcdir}/configure.in
+	@echo Rebuilding ${top_srcdir}/configure
+	(cd ${top_srcdir}; autoconf ; )
+	(cd ${top_builddir}; ./config.status --recheck ; )
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd $(top_builddir) ; ./config.status ; )
+
+-include $(OBJECTS:.o=.d)
+

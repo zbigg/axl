@@ -1,0 +1,396 @@
+    ChangeSet@1.32, 2004-03-09 17:54:27+01:00, nikt@nowy.dom
+      doc/style.css ... new stylesheet
+
+    ChangeSet@1.31, 2004-03-07 21:24:36+01:00, nikt@nowy.dom
+      FIXES: changes to make more stable on Win32
+
+    ChangeSet@1.30, 2004-02-24 01:39:34+01:00, zbigg@marl.(none)
+      OK ... lot of changes - night at marl
+      1. doc improvements - xmlto is now using stylesheeets (style.css)
+      2. some code fixies using valgrind
+      3. sleeep at least
+
+    ChangeSet@1.29, 2004-02-10 18:11:23+01:00, zbig@pentagon.eu.org
+      Merge pentagon.eu.org:/home/users/zbig/repo/axl
+      into pentagon.eu.org:/home/users/zbig/src/axl
+
+    ChangeSet@1.18.1.1, 2004-02-10 18:11:12+01:00, zbig@pentagon.eu.org
+      minor changes in axl_mksgml (options,coments) and sgetopt.c ( true <=> != 0) 
+      
+
+    ChangeSet@1.25.1.1, 2004-02-07 22:24:34+01:00, nikt@nowy.dom
+      MSW: MSVS Projects: added new static targets for libxl and zcompat
+      MDMF: is now mowed to zcompat (mdmfdbg.c) so it don't work now :)
+      minor other code fixing
+      new module: wxAxl - empty yet, name is self explanatory
+
+    ChangeSet@1.27, 2004-02-01 19:18:21+01:00, zbigg@nowy.dom
+      Use repo_settings file to customize repositories. So different repositories
+      can have different branches, and it won't be transfered between them.
+      Ignore files : bld*
+
+    ChangeSet@1.27, 2004-02-01 19:18:21+01:00, zbigg@nowy.dom
+      Use repo_settings file to customize repositories. So different repositories
+      can have different branches, and it won't be transfered between them.
+      Ignore files : bld*
+
+    ChangeSet@1.27, 2004-02-01 19:18:21+01:00, zbigg@nowy.dom
+      Use repo_settings file to customize repositories. So different repositories
+      can have different branches, and it won't be transfered between them.
+      Ignore files : bld*
+
+    ChangeSet@1.26, 2004-02-01 18:33:45+01:00, zbigg@nowy.dom
+      a minor change to improve coverage test script
+
+    ChangeSet@1.25, 2004-01-31 00:13:51+01:00, zbigg@nowy.dom
+      1. configure - added option --enable-gcov and fixed some bug when detecting libpq
+      2. postgres module, no more stable
+      3.some warning removed from zcompat/ansi,posix.c
+      4. changed behavior of zfgets !!! THINK ABOUT IT
+      5. new tests
+
+    ChangeSet@1.24, 2004-01-28 21:18:13+01:00, zbigg@nowy.dom
+      improved AXL functions api
+      stdaxl: conform changes from above
+      new test: matrix.xl - passed - simple matrices multiply
+
+Release 0.1.6 (incoming)
+
+    ChangeSet@1.23, 2004-01-28 21:07:07+01:00, zbigg@nowy.dom
+      Lot of debugging work with valgrind, so no errors are detected and
+      all runtime bugs are removed i think.
+      
+      zpio.c:
+        (zst_freerec): FIX: remove also ungetc data
+      zmod.c:
+        FIX: memory: remova all modules on exit !
+        CLEANUP: as zmod now is part of zcompat, so all "file and directories" functions are
+            only stubs to zpio
+      stdio.c:
+        FIX: memory: delete array of std streams on exit !
+      xlasm.c:
+        (xlasm_put_value): valgrind: removed use of possibly unitilaized value
+      proc.c:
+        (XLF_RET): FIX: there were error within detecting if return is from metho or normal 
+                 function (there was = where == should be !!!)
+      object.c:
+        removed warnings
+      objarray.c:
+        (xl_append, xl_prepend, and such) 
+            return array object by XLF_RETURN_REF instead od XLF_RETURN_OBJ, because
+            we hadn't called xlv_inc_ref on it
+      grammar.y, grammar.h, grammar.c:
+        strings/symbols are now used in bison parser in such manner that it shouldn't allocate any
+        and/or deallocated or unreferenced, so eliminated all xls_free/xls_new and such
+      context.c, codegen.c:
+        (*): valgrind: initialize flags in xl_value
+      code.c:
+        (xlc_read_labels): valgrind: removed possible fail on read unitialized value (x)
+      builtin.c:
+        (xl_free_func_builtin): removed unused variables
+        (static set_lib_path): now use static buffer to contain AXL path passed to zmod
+      ztools.h:
+        disable MDMF_DEBUG 
+        TODO: it should go to configure/config.in 
+      STATUS:
+        removed info about memory bugs
+
+    ChangeSet@1.22, 2004-01-19 13:22:48+01:00, zbigg@nowy.dom
+      proc.c: (INSTR_RET): FIXED: there was one to much value destroyed !!! fixed
+
+    ChangeSet@1.21, 2004-01-19 13:09:51+01:00, zbigg@nowy.dom
+      lot work to make it work back on linux !?
+      works, but not stable
+
+    ChangeSet@1.20, 2004-01-19 00:48:02+01:00, nikt@nowy.dom
+      libxl:
+          1. fixed all known memory leaks for now (passing default arguments and trace names)
+          2. use symbol table to hold all "compiler" strings, TODO: use symbol d to pass identifiers in program
+          3. (MSVC projects): removed zcompat code
+      
+      zcompat:
+          1. (MSVC Projects): separated from libxl 
+          2. zcconv module is now usable and looks like working, needs tests
+      
+      (all MSVC Projects)
+          now obey library splitting - link with zcompat and libxl
+
+    ChangeSet@1.19, 2004-01-17 19:57:01+01:00, zbigg@nowy.dom
+      merge with jota/pentagon axl_mksgml work
+
+    ChangeSet@1.15.1.3, 2004-01-17 19:50:39+01:00, zbigg@nowy.dom
+      postgres.c:
+        check for libpq-fe.h in more places to support debian
+      configure, configure.in, config.h.in:
+        check for libpq-fe.h in more places  to support debian
+        removed check for ssize_t type ... not needed anymore
+
+    ChangeSet@1.15.1.2, 2004-01-17 19:47:28+01:00, zbigg@nowy.dom
+      axl_mksgml.l:
+        added book ref? whet is it ?
+        frst verb tekst is always in new line
+
+    ChangeSet@1.15.1.1, 2004-01-17 11:15:15+01:00, zbigg@zbigg.(none)
+      added directory structrure for making tests !
+
+    ChangeSet@1.18, 2004-01-14 16:38:10+01:00, zbig@pentagon.eu.org
+      sgetopt V2 : genusage
+      programs use new features of sgetopt
+      sgetopt.h:
+        added header of (sgetopt_genusage)
+      sgetopt.c:
+        (sgetopt_genusage): done, working good accepts FILE* as last argument
+        added some doc do (sgetopt)
+      axl_mksgml.l:
+        now use sgetopt_genusage to print parameters usage information
+        all options are parsed by sgetopt
+      axl.c:
+        now use sgetopt_genusage to print parameters usage information
+        so added info to sgo_rec options[]
+      VERSION:
+        new version
+
+    ChangeSet@1.17, 2004-01-14 14:47:13+01:00, zbig@pentagon.eu.org
+      sgetopt.c:
+        added SGO_DOUBLE implementation
+        use strtol/strtod to parse numbers
+      axl_mksgml.l:
+        default dtd_version is now 4.1.2
+        default output mode is XML !
+        fixed bug: end of subsetion </refsect1> appeared before end of list </para> - now OK
+      Makefile.in:
+        axl_mksgml now uses sgetopt.o
+        ,
+      configure.in:
+        dodano argument --enable-/disable-web-prefix 
+        zmienna web_prefix - miejsce generowania info o pakiecie dla WWW
+
+    ChangeSet@1.16, 2003-12-20 22:17:51+01:00, zbyszek@plus.home.net.pl
+      value.c:
+        floats are now displayed using %g printf format
+      test_oper.xl:
+        new file
+
+    ChangeSet@1.15, 2003-12-14 20:39:27+01:00, zbigg@zbigg.(none)
+      Merge zbigg.(none):/wn/work/src/axl into zbigg.(none):/home/src/axl
+
+    ChangeSet@1.13.1.1, 2003-12-14 15:22:40+01:00, nikt@nowy.dom
+      created msvc project for zcompat library and
+      in zcompat - removed dependencies on libxl
+
+    ChangeSet@1.14, 2003-12-13 04:17:46+01:00, zbigg@zbigg.(none)
+      1. updated documentation, moved Object API doc into include/xlcore.h
+      2. expanded zvformatter with output transformations
+      3. axl_mksgml now depens on libzcompat aqnd uses zpio
+      4. some changes in informational files
+      5. fixed library names in src/{zcompat,libxl}/Makefile.in
+
+    ChangeSet@1.13, 2003-12-10 11:26:38+01:00, nikt@nowy.dom
+      Merge ssh://zbyszek@plus.home.net.pl//home/zbyszek/axl
+      into nowy.dom:E:/src/axl
+
+
+    ChangeSet@1.12, 2003-12-10 01:42:31+01:00, nikt@nowy.
+      1. fix msvc build to conform new source tree
+      2. (xlasm,wutil): include fixed to new layout
+
+    ChangeSet@1.11, 2003-12-05 17:53:07+01:00, zbigg@zbigg.(none)
+    
+    ChangeSet@1.10, 2003-12-05 15:56:08+01:00, zbigg@zbigg.(none)
+      Makefile comment changes
+    
+    ChangeSet@1.9, 2003-12-05 04:15:37+01:00, zbigg@zbigg.(none)
+      merge with lcc
+
+    ChangeSet@1.7.3.5, 2003-12-05 04:06:02+01:00, zbigg@zbigg.(none)
+      some insignificant changes while merging with lcc-branch
+      added doc/docmake.sh
+      updated ChangeLog from bk changes
+
+    ChangeSet@1.7.1.6, 2003-11-28 00:07:20+01:00, zbyszek@plus.home.net.pl
+
+Release 0.1.15
+	BitKeeper generated summary of commited changesets
+
+ChangeSet@1.15, 2003-11-27 23:47:32+01:00, zbigg@zbigg.(none)
+  1. (*) new source tree:
+  	src/zcompat - 
+  		there go zpio,zmod,ztools and it's place for zthread in future
+  		build libzcompat$VER.so
+  	src/libxl   - 
+  		as usual builds libxl$VER.so but not including all that went to zcompat
+  	include/zcompat - 
+  		all common includes go there: zsystype,zdefs,zpio,zmod etc.
+  	include/axl
+  		all axl public includes go there
+  	{stdlib,modules}/axlinc 
+  		all axl includes that will be installed
+  
+  2. new installation tree
+  	$(pkglibdir)	is now place for axl includes and dynamic loadable modules
+  	$(includedir)/axl - place of all axl public C headers
+  	$(includedir)/zcompat - place of all zcompat public C headers	
+  4. GNU makefile system now works according to these dirtree changes
+
+ChangeSet@1.14, 2003-11-27 21:10:22+01:00, zbigg@zbigg.(none)
+  1. change of headders to zcompat/* and axl/*
+  2. minor changes in clean_all target in Makefile.in - delete *.d
+
+ChangeSet@1.13, 2003-11-26 15:58:03+01:00, zbigg@zbigg.(none)
+  ach lot of changes:
+  	axl_mksgml
+  	XLV_MREF suupport improved
+
+ChangeSet@1.12, 2003-11-22 02:16:42+01:00, zbigg@zbigg.(none)
+  1. added tests files in tests/ firectory
+  2. doc:
+
+ChangeSet@1.11, 2003-11-21 01:41:40+01:00, zbigg@zbigg.(none)
+  configure.in regenerated ... 
+  TODO: consider removing configure from rev control
+
+ChangeSet@1.10, 2003-11-21 01:40:16+01:00, zbigg@zbigg.(none)
+  merging configure modifications
+
+ChangeSet@1.7.1.1, 2003-11-21 01:27:40+01:00, zbigg@zbigg.(none)
+  error.c:
+    created wrapper for targets without char* strerror(int errcode)
+    that is enabled #ifndef HAVE_STRERROR
+  xlang.h:
+    FIXED: in #ifdef _cplusplus to __cplusplus
+  configure.in, configure:
+    1. fixed SQLIte detection code and now it shows up a summary about it
+    2added stars for module enabling info
+  prepare_project.sh, axl.prj:
+    new file
+
+ChangeSet@1.9, 2003-11-19 18:49:00+01:00, zbigg@marl.(none)
+  .del-Makefile~c9f35898181fc69:
+    Delete: doc/Makefile
+  .del-Makefile~de876975f4298631:
+    Delete: Makefile
+
+ChangeSet@1.8, 2003-11-19 18:47:28+01:00, zbigg@marl.(none)
+  configure imprevements
+
+ChangeSet@1.7, 2003-11-16 16:40:08+01:00, zbigg@zbigg.(none)
+  documentation upgraded do DocBook XML 4.1.2
+  minor configure.in bug fixes (gd)
+
+ChangeSet@1.6, 2003-10-22 22:41:24+01:00, nikt@nowy.
+  Makefile.in:
+    hmm fix of build bison
+  stdlib.dsp, sqlite.dsp, mod_cgi.dsp, libxl.dsp, axl.dsp, InstallBin.dsp:
+    hmm MSVC sometimes changes something ? what ?
+  logging_ok, config:
+    some name changes
+
+ChangeSet@1.5, 2003-10-22 19:19:49+02:00, zbigg@marl.(none)
+  configure, configure.in:
+    added build detect for sqlite via pkg-config
+  Makefile.in:
+    added SCCS directory ignoring and aclocal.m4 to install
+
+ChangeSet@1.4, 2003-10-22 15:58:19+02:00, zbigg@marl.(none)
+  change Makefiles to know what to do with SCCS dir and added aclocal
+
+ChangeSet@1.3, 2003-10-16 19:58:34+02:00, zbigg@marl.(none)
+  sqlite.c module added to build system: modules/Makefile and configure.in
+  now use pkg-config, so need to install aclocal.m4
+
+ChangeSet@1.2, 2003-10-16 00:03:11+02:00, zbigg@marl.(none)
+  Import changeset
+
+ChangeSet@1.1, 2003-10-16 00:01:11+02:00, zbigg@marl.(none)
+  Initial repository create
+	
+Release 0.1.14
+
+Tue Oct  7 19:58:26 2003 CEST Zbigniew Zagorski <zzbigg@o2.pl>
+	* modules/sqlite.c: created database bindoing for SQLite library
+	* modules/template/dbms.c : created template module for simple
+	    DBMS access inwith uniform db interface
+	* modules/template/res.c : created template for resource
+	* modules/template/simple.c : created template for simple module
+	
+Wed 07 Jul 2003 18:05:07 CEST Zbigniew Zagorski <zzbigg@o2.pl>
+	* modules/mysql.c:	fixed code of mysql module, it compiles now correctly, but is not
+			tested, now uses HAVE_MYSQL_H and HAVE_MYSQL_MYSQL_H
+	* configure.in: added detection of "mysql.h" and "mysql/mysql.h"
+	* common/zsystype.h: on FreeBSD ZSYSD_FREEBSD is defined
+	* zpio/utils.c: zpio_send on FreeBSD on file to socket transfer is
+			implemented using sendfile optimized syscall - not tested for w working
+	* other: fixed copyright date in some files
+
+Release 0.1.13
+
+Sat 28 Jun 2003 00:58:06 CEST Zbigniew Zagorski <zzbigg@o2.pl>
+	* configure.in,config.h.in: all variables are now independednt of acconfig.h
+	* acconfig.h: removed
+	* misc/cfg_update.sh: created script that keeps static configuration files
+			(build/*/config.h) up-to-date with version and config.h.in
+Fri 27 Jun 2003 20:31:19 CEST Zbigniew Zagorski <zzbigg@o2.pl>
+	* zpio.h, chconv.h, chconv.c: chconv.h has become deprecated, it will be removed soon
+	* configure.in, +VERSION: configure now reades VERSION number from
+			VERSION file in root package directory
+	* zpio/bsdsock.c,zpio.h: added functions zsopen_tcp_server, and zaccept
+	* zpio/win/wpipe.c: fixed some functionality around spawning process, not ready
+			yet, but better that it was
+	* zpio/obuf.c, ibuf.c: deprecated and removed !
+
+Release 0.1.12
+
+Sun 08 Jun 2003 23:36:44 CEST Zbigniew Zagorski <zzbigg@o2.pl>
+	* lot_of_changes: get them from CVS
+
+Release 0.1.10
+
+Wed 30 Apr 2003 16:52:02 CET Zbigniew Zagorski <zzbigg@o2.pl>
+	* axl.c and others: created memory debugging facilities
+	* libxl/: removed almost all memory leaks, only which haven't been deleted
+		are when parser detects error, if so lot of xl_code and dependants are leaved
+    		in memory
+Tue 25 Mar 2003 23:50:33 CET Zbigniew Zagorski <zzbigg@o2.pl>
+	* */Makefile.in: obey CFLAGS from autoconf and many more changes which don't
+	                 affect the functionality
+	* configure.in: 1. generate CFLAGS acording to --enable/disable-debug param
+					2. show post-configure info for user
+	* lexfunc.c: fixed bug of possible "can't do ungetc"
+	* doc/part3.sgml, doc/Makefile.in: removed axlc from documentation
+	* others: many minor changes which don't affect functionality
+
+Wed 19 Mar 2003 21:04:00 CET Zbigniew Zagorski <zzbigg@o2.pl>
+	* axl.c : added -S option, which outputs assembler code
+	* progs/xlasm.c: added file with function to output assembler code for -S option
+	* object.c, value.c, code.c fixed: few minor bugs
+
+Wed 26 Feb 2003 00:15:16 CET Zbigniew Zagorski <zzagorski@wi.ps.pl>
+	* xl.c, xlang.h,libxl.def:	added functions for reading configuration
+			stored in library about modules/includes and so on
+			added interface functions: xl_cfg_get_value, xl_cfg_get_str, xl_cfg_get_obj
+			added internal functions:
+	* axl.c:	added options:
+   			 -d - show configuration
+			 -dh - show configuration in HTML format
+	* lexfunc.c:	errors/warnings and debug information about files is now displayed
+			as absolte path
+	* build/msvc/InstallBin.(mak|dsp),install.txt: added install targets for MSVC build
+	* build/msvc: created dependencies so make is very ! easy
+
+Tue 23 Jan 2003 00:15:16 CET Zbigniew Zagorski <zzagorski@wi.ps.pl>
+	* proc.c: new reliable calling convention implemented, so
+	    fixed bug which caused: f(a) + f(c) <==> to f(c) + f(c)
+
+	* sample/: new directory structure for sample programs introduced
+		    which will soon replace xl/ directory
+
+Mon 06 Jan 2003 15:14:26 CET Zbigniew Zagorski <zzagorski@wi.ps.pl>
+	* xlstr.c xlstr.h: xl_str now use copy-on-write mechanism so it can
+	    decrease malloc count
+	* lex.c: fixed BUG when detecting comment which hidden '/' and '/='
+	    operators
+
+Mon 16 Dec 2002 19:47:06 CET Zbigniew Zagorski <zzagorski@wi.ps.pl>
+	* *: Initial public release at version 0.1.8.
+	* STATUS: created package status information file.
+	* ChangeLog,README,INSTALL: created

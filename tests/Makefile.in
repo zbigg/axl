@@ -1,0 +1,88 @@
+######################################
+#
+# File		: Makefile.in
+# Id            : $Id: Makefile.in 1.1 04/01/17 11:15:15+01:00 zbigg@zbigg.(none) $
+# Author	: Zbigniew Zagorski <zzbigg@o2.pl>
+# Type		: GNU Make
+# Source type	: distribution
+#
+######################################
+
+# Default:  Compile with debugger info
+SUBDIRS=tests
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = ..
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+# use 'DESTDIR' from environment!
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+default : all
+
+doc:
+	$(MAKE) -C doc $@
+
+GENERATED_FILES = Makefile
+
+distclean:
+	-rm -f $(GENERATED_FILES)
+	@for SUB in $(SUBDIRS) ; do 					\
+	    [ -f $$SUB/Makefile ] || ./$(top_builddir)/config.status ;	\
+	    $(MAKE) -C $$SUB $@ || exit $$? ;  				\
+	done
+	-rm -f common/*.o core *.so *.a
+
+clean all clean_all inst depend install :
+	@for SUB in $(SUBDIRS) ; do					\
+	    [ -f $$SUB/Makefile ] || ./$(top_builddir)/config.status ;	\
+	    $(MAKE) -C $$SUB $@ || exit $$? ;				\
+	done
+
+STD_FILES=
+DIST_FILES=$(STD_FILES) $(SUBDIRS) $(EXTRA_DIST)
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/misc/mkdirs.sh
+
+distdir=@PACKAGE@-@VERSION@
+cur_distdir=$(distdir)/$(subdir)
+
+#
+# Keep Makefile recent
+#
+
+${top_builddir}/config.h: ${top_srcdir}/config.h.in
+	@echo Rebuilding config.h
+	(cd $(top_builddir) ; ./config.status ; )
+
+${top_srcdir}/configure  $(top_builddir)/config.status: ${top_srcdir}/configure.in
+	@echo Rebuilding configure
+	(cd ${top_srcdir}; autoconf ; )
+	(cd ${top_builddir}; ./config.status --recheck ; )
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd $(top_builddir) ; ./config.status ; )
+
+
+
+

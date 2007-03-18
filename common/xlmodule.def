@@ -1,0 +1,5 @@
+;	This definition file for AXL Modules.
+
+EXPORTS
+	zmod_callback             	@100
+

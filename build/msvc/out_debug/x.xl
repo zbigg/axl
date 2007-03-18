@@ -1,0 +1,11 @@
+#!/usr/bin/env axl
+
+v = new;
+v.name = "xxx";
+x=func(a,b) {
+	d =  copy a;
+	d.name = "yyy";
+	return d;
+};
+#echo x(v,3);
+

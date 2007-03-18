@@ -1,0 +1,164 @@
+#!/usr/bin/axl
+#
+# File:		std/io
+#
+# Id:		$Id: io 1.3 04/05/22 20:11:42+02:00 zbigg@veinard.dom $
+#
+# Copyright:
+#
+#   This program is Copyright(c) Zbigniew Zagorski 1999-2001, 
+#   All rights reserved, and is distributed as free software under the 
+#   license in the file "LICENSE", which is included in the distribution.
+#
+#############################################
+##
+##	=Module	stdAXL IO
+##
+##	Here you will find description of the stdAXL IO module
+##
+#############################################
+##
+##	=Function axl.io.open
+##		open stream
+##	
+##	=Synopsis
+##	    |include "stdio";
+##	    |
+##	    |resource axl.io.open(string name, integer mode = O_READ);
+##
+##	=Description
+##
+##	    Opens stream which name is passed in special form.
+##
+##	    The form of stream name is:
+##		| [protocol://]path
+##	    where protocol can be (in default settings):
+##		- file
+##		- pipe
+##		- socket
+##		- http
+##	    
+##	    If protocol is not set or is <file> then opened stream
+##	    is system file.
+##
+##	    If protocol is <pipe>
+##	=Returns
+##		nothing
+##	=Errors
+##		nothing
+##
+#############################################
+##
+##	=Function axl.io.fopen
+##		open file
+##	
+##	=Synopsis
+##	|include "stdio";
+##	|
+##	|resource axl.io.fopen(string name, integer mode = O_READ );
+##
+##	=Description
+##		nothing
+##
+##	=Returns
+##		nothing
+##
+##	=Errors
+##		nothing
+##
+#############################################
+##
+##	=Function axl.io.sopen
+##		open TCP/IP socket
+##	
+##	=Synopsis
+##	|include "stdio";
+##	|
+##	|resource axl.io.sopen(string host, integer port );
+##
+##	=Description
+##		nothing
+##
+##	=Returns
+##		nothing
+##
+##	=Errors
+##		nothing
+##
+#############################################
+##
+##	=Function axl.io.popen
+##		open pipe connection to shell command
+##	
+##	=Synopsis
+##	|include "stdio";
+##	|
+##	|resource axl.io.popen(string command, integer mode = O_READ);
+##
+##	=Description
+##		nothing
+##
+##	=Returns
+##		nothing
+##
+##	=Errors
+##		nothing
+##
+#############################################
+
+if( ! _std_io_included ) {
+    if( !std )
+        axl = std = new;
+    _std_io_included = 1;
+    axl.io = (builtin "stdaxl:create_io_object") ();
+/*
+    * AXL IO uses zpio library
+    * Functions:
+	FILE	io.open(path,mode = io.O_READ)
+	FILE	io.sopen(host,port)
+	FILE	io.popen(command,mode = io.O_READ)
+	FILE	io.httpopen(url)
+	  ^ these functions returns 0 on error
+	  
+	int	io.close(FILE)
+	
+	int	io.getc()
+	int	io.fgetc(FILE)
+	int	io.putc(int)
+	int	io.fputc(FILE)
+	  ^ these functions returns -1 on error
+*/
+    
+    with( axl.io ) {
+		O_READ  =   0x0001;
+		/** Open for writing. */
+		O_WRITE =   0x0002;
+		/** Append to existing file. */
+		O_APPEND =  0x0004;
+		/** Don't open if exists. */
+		O_EXCL  =   0x0008;
+		/** Truncate if exists. */
+		O_TRUNC =   0x0010;
+		/** Set asynchrous mode. */
+		O_NODELAY = 0x0020;
+		/** Create if doesn't exists. */
+		O_CREAT =   0x0040;
+	
+		O_BINARY =	0x0100;
+		O_TEXT	=	0x0200;
+
+		O_RD =		O_READ;
+		O_WR =		O_WRITE;
+		O_RDONLY =	O_READ;
+		O_WRONLY =	O_WRITE;
+	
+		/** Open for reading and writing. */
+		O_RDWR = ( O_READ | O_WRITE );
+		O_NEW  = ( O_WRITE | O_CREAT | O_TRUNC );
+		/* to_file(name,val) builtin */
+		from_file = read_file;
+		/* value from_file(name) builtin */
+		to_file = write_file;
+
+    }; // with( io )
+}; // force single include

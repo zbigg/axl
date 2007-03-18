@@ -1,0 +1,32 @@
+STATUS of AXL	$Id: STATUS 1.4 04/01/31 00:13:50+01:00 zbigg@nowy.dom $
+
+RELEASES:	
+	0.1.16	will be about      30.01.2004
+	0.1.15  released	at 10.12.2003
+	0.1.14  released	at 10.10.2003
+	0.1.12	released	at 08.06.2003
+	0.1.11	released	at 30.04.2003
+	0.1.10	released	at 25.03.2003
+	0.1.9	released	at 23.01.2002
+
+KNOWN BUGS:
+*   AXL: You can close axl.io.stdin/out/err and crash the whole
+    interpreter when it tries to write something.
+    
+
+NEEDED FEATURES:
+* Exception handling and exception flow system
+* Easy API for embedding AXL to programs.
+* DocAXL parsing style where initial content is C_DOCUMENT (see libxl/lex.c)
+    not C_CODE
+* ExprAXL parsing style where expression code is generated
+
+DOCUMENTATION:
+* There is no C AXL API documentaion.
+* There is no StdAXL documentation.
+* There is no AXL Language documentation or even good examples.
+* Command-line tools documentaion is ready and quite good.
+
+OTHER ISSUES:
+* Currently on AXL internal exception raise(SIGSEGV) is called for debug
+    program. You can fix it in libxl/proc.c in xlp_except

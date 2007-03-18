@@ -1,0 +1,38 @@
+#
+# File:		unix.xl
+#
+# Id:		$Id: unix.xl 1.2 03/11/27 22:34:06+01:00 zbigg@zbigg.(none) $
+#
+# Copyright:
+#
+#   This program is Copyright(c) Zbigniew Zagorski 1999-2001, 
+#   All rights reserved, and is distributed as free software under the 
+#   license in the file "LICENSE", which is included in the distribution.
+if( ! _unix_included ) {
+    _unix_included = 1;
+    with( unix = new ) { /* new module object */
+        
+	getenv = builtin "unix:getenv";
+	setenv = builtin "unix:setenv";
+	appenv = func(env,s) {
+	    setenv(env,getenv(env) + s);
+	};
+	getgid		= builtin "unix:getgid";
+	getuid		= builtin "unix:getuid";
+	geteuid		= builtin "unix:geteuid";
+	getpid		= builtin "unix:getpid";
+	getppid		= builtin "unix:getppid";
+	access		= builtin "unix:access";
+		    R_OK	= 4;
+		    W_OK	= 2;
+		    X_OK	= 1;
+		    F_OK	= 0;
+	alarm		= builtin "unix:alarm";
+	pause		= builtin "unix:pause";
+	
+	system		= builtin "unix:system";
+	#exec		= builtin "unix:exec";
+	#
+    };
+};
+

@@ -1,0 +1,6 @@
+
+#include "resource.h"
+
+IDI_LOGO                ICON    DISCARDABLE     "logo.ico"
+IDI_DOC                 ICON    DISCARDABLE     "doc.ico"
+IDI_DOC_MIN             ICON    DISCARDABLE     "doc_min.ico"

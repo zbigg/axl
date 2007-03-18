@@ -1,0 +1,68 @@
+#!/usr/bin/axl
+#
+# File:		sort.xl
+#
+# Id:		$Id: sort.xl 1.3 04/05/22 20:11:42+02:00 zbigg@veinard.dom $
+#
+# Copyright:
+#
+#   This program is Copyright(c) Zbigniew Zagorski 1999-2001, 
+#   All rights reserved, and is distributed as free software under the 
+#   license in the file "LICENSE", which is included in the distribution.
+if( ! _sort_included ){
+    _std_sort_included = 1;
+    if( !std ) {
+	std = axl = new;
+    };
+with( axl.algo = new ) {
+    bubble_sort = func (
+	tab,	# table
+	n,	# number of elements
+	comp  	# comparing function
+	)
+    {
+	i = 0;
+	while( i < n ) {
+	    j = i+1;
+	    while ( j < n ) {
+		x = tab[i];
+		y = tab[j];
+		if ( comp(x, y) > 0 ) {
+		    tab[i] = y;
+		    tab[j] = x;
+		};
+		j+=1;
+	    };
+	    i+=1;
+	};
+    };
+
+    qsort_2 = func( tab,left,right,comp)
+    {
+        if( left < right ) {
+	    m = left;
+	    for(i=left+1; i<= right; i+=1)
+		if( comp(tab[i],tab[left]) < 0 ) {
+		    m+=1;
+		    x = tab[i];
+		    tab[i] = tab[m];
+		    tab[m] = x;
+		};
+	    x = tab[left];
+	    tab[left] = tab[m];
+	    tab[m] = x;
+	    qsort_2(tab,left,m-1,comp);
+	    qsort_2(tab,m+1,right,comp);
+	};
+    };
+    quick_sort = qsort = func(
+	tab,	# table
+	n,	# number of elements
+	comp  	# comparing function
+        )
+    {
+	    qsort_2(tab,0,n-1,comp);
+    };
+    sort = qsort;
+};
+};

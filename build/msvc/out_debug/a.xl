@@ -1,0 +1,6 @@
+#! /usr/bin/env axl
+{
+	var x=2;
+	var y=3;
+	echo x+y;
+};

@@ -1,0 +1,47 @@
+<!-- 							-->
+<!--   File:	docinfo.sgml				-->
+<!--							-->
+<!--   Id:	$Id					-->
+<!--							-->
+<!--   Purpose: AXL Documentation Document Information 	-->
+<!--   and Copyright.					-->
+<!--							-->
+  
+<title>AXL Manual</title>
+<subtitle>Official documentation of AXL project.</subtitle>
+<author>
+    <firstname>Zbigniew</firstname>
+    <surname>Zagorski</surname>
+    <affiliation>
+	<address><email>zzagorski@wi.ps.pl</email></address>
+    </affiliation> 
+
+</author>
+<edition>AXL Manual $Revision: 1.2 $</edition>
+<date>$Date: 03/11/16 16:40:04+01:00 $</date>
+<copyright>
+    <year>2002</year>
+    <year>2003</year>
+    <holder>Zbigniew Zagorski</holder>
+</copyright>
+<legalnotice>
+<para>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT.  IN NO EVENT SHALL ZBIGNIEW ZAGORSKI OR ANY OTHER
+CONTRIBUTOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+</para>
+</legalnotice>
+<legalnotice>
+<para>
+Please direct all questions, bug reports, or suggestions for changes
+to Zbigniew Zagorski, &lt;<literal>zzagorski@wi.ps.pl</literal>&gt;.
+</para>
+<para>
+See <ulink url="http://axlhome.host.sk/axl.html">http://axlhome.host.sk/axl.html</ulink> for more information.</para>
+</legalnotice>
+

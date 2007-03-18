@@ -1,0 +1,166 @@
+######################################
+#
+# File		: Makefile.in
+# Id            : $Id: Makefile.in 1.11 04/05/22 20:40:51+02:00 zbigg@veinard.dom $
+# Author	: Zbigniew Zagorski <zzbigg@o2.pl>
+# Type		: GNU Make
+# Source type	: bunch of programs
+#
+#####################################
+#
+# Programs: axl axl_config axl_mksgml
+#
+# Options
+#	DEBUG=1		compile with debug information (default)
+#	DEBUG=0		compile without debug information
+#	PROF=1		compile with debug information
+#	PROF=0		compile without debug information (default)
+#	INST_DIR=dir	use dir as instalation directory
+#			(default (/usr/local/bin).
+#
+# Targets:
+#    default	: Compile program.
+#    inst	: Install program to default place
+#                 Require root access.
+#    clean	: Remove all intermediate files .
+#    clean_all	: Remove all intermediate files and products.
+#
+######################################
+
+PROFILE=@PROFILE@
+SHARED=@SHARED@
+DEBUG=@DEBUG@
+
+SHARED_EXT=@SHARED_EXT@
+STATIC_EXT=.a
+LIBNAME=@LIBNAME@
+VERSION=@VERSION@
+VERSION_MAJOR=@VERSION_MAJOR@
+srcdir = @srcdir@
+
+LIBXL_NAME=@LIBXL_NAME@
+
+top_srcdir = @top_srcdir@
+top_builddir = ../..
+LIBDIR=$(top_builddir)/lib
+VPATH = @srcdir@:@top_srcdir@/common # this is a comment
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+CC=@CC@
+CPP = @CPP@
+LD=@CC@
+LEX  = @LEX@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+DLLTOOL=@DLLTOOL@
+CP_R = @CP_R@
+mkinstalldirs = $(SHELL) $(top_srcdir)/misc/mkdirs.sh
+
+
+#
+# Compile definitions
+#
+CINCLUDE=-I$(top_srcdir)/common -I$(top_srcdir)/include -I$(top_builddir) -I$(srcdir)
+
+CFLAGS=@DEFS@ @CFLAGS@ $(CINCLUDE)
+
+LDFLAGS=@LDFLAGS@
+
+USELIBS_FLAGS=-L$(LIBDIR) -Wl,-rpath,$(LIBDIR)
+
+XLLDFLAGS=$(USELIBS_FLAGS) @PROG_LIBS@
+
+# These programs are installed
+PROGRAMS=axl axl_config axl_createmod
+
+#These sources get's compiled
+SOURCES=axl.c sgetopt.c
+
+OBJECTS=axl.o sgetopt.o
+
+OUTPUT_FILES=$(OBJECTS)
+PRODUCTS=$(PROGRAMS)
+
+default: all
+
+all: $(PROGRAMS)
+
+#
+# The main build
+#
+axl: axl.o sgetopt.o
+	$(LD)  $^ $(LDFLAGS) $(XLLDFLAGS) -o $@
+
+axl_config: axl_config.in
+	(cd $(top_builddir) ; ./config.status ; )
+
+axl_createmod: axl_createmod.in
+	(cd $(top_builddir) ; ./config.status ; )
+
+#
+# The installation
+#
+inst: $(PROGRAMS)
+	@echo in $(subdir)
+	$(mkinstalldirs) $(bindir)
+	@echo Installing PROGRAMS in $(bindir)
+	@for FILE in $(PROGRAMS) ; do \
+	  echo -n "$$FILE "; \
+	  $(INSTALL) $$FILE $(bindir) ; \
+	done
+	@echo
+
+install: inst
+
+#
+# Cleaning
+#
+clean:
+	-rm -f $(OBJECTS) *.o
+
+clean_all: clean
+	-rm -f $(OBJECTS) $(PRODUCTS)
+	-rm -f *.d *.bak *.~*
+	-rm -f core *.so *.so.* *.a *.~*
+
+distclean: clean_all
+	rm -f Makefile
+
+
+#
+# Keep Makefile recent
+#
+
+${top_builddir}/config.h: ${top_srcdir}/config.h.in
+	@echo Rebuilding config.h
+	(cd $(top_builddir) ; ./config.status ; )
+
+${top_srcdir}/configure  $(top_builddir)/config.status: ${top_srcdir}/configure.in
+	@echo Rebuilding configure
+	(cd ${top_srcdir}; autoconf ; )
+	(cd ${top_builddir}; ./config.status --recheck ; )
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd $(top_builddir) ; ./config.status ; )
+
+
+-include $(OBJECTS:.o=.d)

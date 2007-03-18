@@ -1,0 +1,157 @@
+##################################################################
+##
+##	=Module AXL ObjectAPI
+##		API for manipualting AXL objects
+##
+##
+##	Description ...
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##
+##	=Function xlo_new_map
+##		create new xl_object , type map
+##
+##	=Description
+##	    Create new <map> objct.
+##	    The new object has empty members map.
+##
+##################################################################
+##
+##	=Function xlo_new_res
+##		create new xl_object , type resource
+##
+##	=Synopsis
+##	|xl_object	xlo_new_res(void *res,
+##	|			    sbtree* map,
+##	|			    int map_copy,
+##	|			    void (*destructor)(void*));
+##
+##	=Description
+##	    Create new <resource> object.
+##
+##	    <resource> objects contain generic C pointer which
+##	    holds some resource, reference count, methods and
+##	    destructor function.
+##
+##	    The <res> argument is pointer to resource. The <map>
+##	    argument contains methods that can be called on this
+##	    resource by AXL program. If <map_copy> is true the new
+##	    object will contain a copy of the methods, else it will
+##	    use this specific map object <map> that should live
+##	    as long as the new object.
+##
+##	    The <destructor> argument is pointer to "free resource"
+##	    callback function which is called when object is destroyed
+##	    by garbage collector.
+##
+##	    The function returns pointer to new xl_object that has
+##	    reference_count set to 1.
+##
+##	    After using this pointer should be released by <xlo_free>.
+##
+##################################################################
+##	=Function xlo_free
+##		free reference to xl_object
+##	=Synopsis
+##	| int		xlo_free(xl_object obj);
+##
+##	= Description
+##		free reference to xl_object
+##################################################################
+##	=Function xlo_free_member
+##		delete member of xl_object
+##	=Synopsis
+##	| void	xlo_free_member(xl_object obj,const char* name);
+##
+##	= Description
+##		Delete member of object.
+##################################################################
+##	=Function xlo_copy
+##		create copy of xl_object
+##	=Synopsis
+##	| xl_object	xlo_copy(const xl_object_t* src);
+##
+##	= Description
+##		create copy of xl_object
+##################################################################
+##	=Function xlo_field
+##		get member of object
+##	=Synopsis
+##	| xl_value xlo_field(const xl_object_t* obj,
+##	|                    const char* name,int flags);
+##
+##	=Description
+##		If <flags> is 0 then no new element is created else
+##		new is created when specified by <idx> doesn't
+##		exists.
+##	=Return value
+##		Pointer to value which is specfied element of array.
+##
+##################################################################
+##
+##	=Function xlo_index
+##		get element of array
+##
+##	=Synopsis
+##	| xl_value xlo_index(const xl_object_t* obj,
+##	|                    const xl_value_t* idx,int flags);
+##
+##	=Description
+##		create copy of xl_object
+##		If <flags> is 0 then no new element is created else
+##		new is created when specified by <idx> doesn't
+##		exists.
+##	=Return value
+##		Pointer to value which is specfied element of array.
+##
+##################################################################
+
+
+##################################################################
+##
+##	=Function xlo_set_map_public, xlo_get_map_public
+##		set/get public map flag
+##
+##	=Synopsis
+##	| xl_bool   xlo_set_map_public(xl_object obj, xl_bool bpublic);
+##	| xl_bool   xlo_get_map_public(const xl_object_t* obj);
+##
+##	=Description
+##
+##		"public map" is the flag of object that informs XL library
+##		if it have to free map connected with specified object.
+##
+##		Using these functions you can obtain or change this flag.
+##
+##	=Return value
+##
+##		Returns destination state of "public map" of specified object.
+##		If state of flag is changed, the "after change" state is returned.
+##
+##################################################################
+##
+##	=Function xlo_set_map, xlo_get_map
+##		set/get object map
+##
+##	=Synopsis
+##	| void      xlo_set_map(xl_object obj, xlmap* map, xl_bool bcopy, xl_bool bpublic);
+##	| xlmap    xlo_get_map(const xl_object_t* obj);
+##
+##	=Description
+##
+##		"map"	is an xl_map connected with xl object. The map is container for
+##		members of an object addressed by names or member pointer.
+##
+##		<xlo_set_map> sets the new map to specified object. If <bcopy> flag is true
+##		then a copy of the map is set. If <bpublic> flag is set and <bcopy> is unset
+##		then "public map" flag is set to <bpublic>.
+##
+##	=Return value
+##
+##		<xlo_get_map> returns
+##
+##################################################################

@@ -1,0 +1,11 @@
+#!/usr/bin/xparse
+#
+# Copyright:
+#
+#   This program is Copyright(c) Zbigniew Zagorski 1999-2001, 
+#   All rights reserved, and is distributed as free software under the 
+#   license in the file "LICENSE", which is included in the distribution.
+if( ! _allegro_included ) {
+    _allegro_included = 1;
+    allegro = (builtin "allegro:create_allegro_object") ();
+};

@@ -1,0 +1,281 @@
+EXPORTS
+;
+; Id: $Id: libxl.def 1.4 04/03/07 21:24:27+01:00 nikt@nowy.dom $
+;
+;;;;;;;;;;;;
+;AXL
+;;;;;;;;;;;;
+;  xl.c
+	xl_cfg_get_value
+	xl_cfg_get_str
+	xl_cfg_get_obj
+	xl_init
+	xl_done
+	xl_parse
+	xl_fparse
+	xl_strparse
+	xl_run
+	xl_set_ctl_prop
+	xl_get_ctl_prop
+
+	xl_set_include_path
+	xl_set_library_path
+	xl_push_library_path
+	xl_pop_library_path
+	xl_push_include_path
+	xl_pop_include_path
+
+	xl_env_new
+
+	xldbg_val_print
+
+	xldbg_enable_mask
+	xldbg_add_mask
+	xldbg_trace
+	xldbg_print
+	xl_trace
+	xl_get_debug_stream
+	xl_set_debug_stream
+
+; value.c & valoper.c
+	xl_str2int
+	xl_str2float
+	xl_try_str2number
+
+	xl_float_cmp
+	xl_float_get_epsilon
+	xl_float_set_epsilon
+
+	xlv_new
+	xlv_vnew
+	xlv_new_str
+	xlv_new_int
+	xlv_new_float
+
+	xlv_new_func_builtin
+	xlv_new_func_ip
+	xlv_new_func_label
+
+	xlv_free
+	xlv_done
+	xlv_frees
+	xlv_clear
+
+	xlv_cpy
+	xlv_set
+	xlv_vset
+	xlv_mov
+
+	xlv_set_str
+	xlv_set_strn
+	xlv_set_int
+	xlv_set_char
+	xlv_set_float
+	xlv_set_ref
+	xlv_set_ptr
+
+	xlv_set_func_builtin
+	xlv_set_func_ip
+	xlv_set_func_label
+
+	xlv_strx
+	xlv_str
+	xlv_str_cap
+	xlv_int
+	xlv_char
+	xlv_float
+	xlv_deref
+	xlv_ptr
+
+	xlv_set_parent
+	xlv_inc_ref
+	xlv_dec_ref
+
+	xlv_ptr_name
+	xlv_ptr_type
+	xlv_ptr_register_type
+	xlv_ptr_unregister_type
+
+	xlv_true
+	xlv_cmp
+	xlv_add
+	xlv_sub
+	xlv_mul
+	xlv_div
+	xlv_mod
+	xlv_chs
+	xlv_l_and
+	xlv_l_xor
+	xlv_l_or
+	xlv_l_neg
+	xlv_b_and
+	xlv_b_xor
+	xlv_b_or
+	xlv_b_not
+	xlv_field
+	xlv_index
+
+	xlv_fp_dup
+	xlv_fp_new
+	xlv_fp_free
+
+	xlv_swrite
+	xlv_sread
+
+; object.c
+    xlo_new_namex
+    xlo_new_name
+	xlo_new_map
+
+	;xlo_init
+	xlo_copy
+	xlo_free
+	xlo_frees
+	xlo_inc_ref
+	xlo_dec_ref
+
+	xlo_field
+	xlo_ffield
+	xlo_index
+	xlo_findex
+
+	xlo_add_field_int
+	xlo_add_field_float
+	xlo_add_field_str
+	xlo_add_field_ref
+	xlo_add_field_func_builtin
+	xlo_add_field_func_ip
+	xlo_add_field_func_label
+
+	xlo_add_index_int
+	xlo_add_index_float
+
+	xlo_add_index_str
+
+	xl_res_new
+	xl_res_get
+	xl_res_set
+
+	xl_array_new
+
+; context.c
+	xlx_new
+	xlx_init
+
+	xlx_init_object
+	; NR	xlx_copy
+	xlx_free
+	xlx_frees
+
+	;xlx_enter_func
+	;xlx_leave
+
+	xlx_find
+	xlx_set
+	xlx_free_variable
+
+	xlx_set_int
+	xlx_set_float
+	xlx_set_str
+	xlx_set_ref
+; code.c
+	xlc_new
+	xlc_free
+	xlc_add_instr
+	xlc_add_instr_nil
+	xlc_add_instr_int
+	xlc_add_instr_float
+	xlc_add_instr_str
+	xlc_add_label
+	xlc_add_code
+	xlc_join
+	xlc_read_labels
+	xlc_opt_jumps
+	xlc_opt_code
+	xlc_load
+	xlc_store
+	xlc_print
+
+; vm.c
+	xlvm_new
+	xlvm_free
+
+	xlvm_create
+	xlvm_kill
+	xlvm_wait
+	xlvm_step
+	xlvm_run
+
+	xlth_enter_func
+	xlth_enter_object
+
+; builtin.c
+	xl_load_func_builtin
+	xl_free_func_builtin
+	xl_load_last_error
+
+; xlstr.c
+	xls_new
+	xls_newn
+	xls_new_xls
+	xls_free
+	xls_ref
+	xls_alloc
+	xl_str_empty
+
+	xls_cmp
+
+	xls_set
+	xls_setn
+	xls_set_xls
+
+	xls_add
+	xls_addn
+	xls_add_xls
+
+	xls_add_char
+	xls_add_int
+	xls_add_float
+
+	xls_bwrite
+	xls_bread
+
+	xls_erase_blank
+
+	xlsprintf
+	xlsvprintf
+;xlmap.c
+	xlmap_new
+	xlmap_init
+	xlmap_free
+	xlmap_done
+	xlmap_add
+	xlmap_del
+	xlmap_del_i
+	xlmap_find
+	xlmap_find_i
+	xlmap_find_str
+	xlmap_find_str_i
+	xlmap_begin
+	xlmap_end
+	xlmi_free
+	xlmi_inc
+	xlmi_dec
+	xlmi_eq
+	xlmi_get
+	xlmi_set
+	xlmi_key
+;xlasm.c
+	xlasm_put_instr
+	xlasm_put_value
+; axl_i.c
+	axl_zlinkdll_set_alloc
+
+	axl_free
+	axl_malloc
+	axl_calloc
+	axl_realloc
+	axl_strdup
+
+
+

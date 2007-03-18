@@ -1,0 +1,285 @@
+# Anjuta Version 0.1.9 
+Compatibility Level: 1 
+
+<PROJECT_DESCRIPTION_START>
+The AXL Programming Language
+<PROJECT_DESCRIPTION_END>
+<CONFIG_PROGS_START>
+<CONFIG_PROGS_END>
+<CONFIG_LIBS_START>
+<CONFIG_LIBS_END>
+<CONFIG_HEADERS_START>
+<CONFIG_HEADERS_END>
+<CONFIG_CHARACTERISTICS_START>
+<CONFIG_CHARACTERISTICS_END>
+<CONFIG_LIB_FUNCS_START>
+<CONFIG_LIB_FUNCS_END>
+<CONFIG_ADDITIONAL_START>
+<CONFIG_ADDITIONAL_END>
+<CONFIG_FILES_START>
+<CONFIG_FILES_END>
+<MAKEFILE_AM_START>
+<MAKEFILE_AM_END>
+
+props.file.type=project
+
+anjuta.version=0.1.9
+anjuta.compatibility.level=1
+
+project.name=axl
+project.type=GENERIC
+project.target.type=EXECUTABLE
+project.version=0.99
+project.author=Zbigniew Zagorski
+project.source.target=axl
+
+project.excluded.modules=\
+	intl
+
+project.has.gettext=0
+
+project.programming.language=C
+
+project.menu.entry=axl Version 0.99
+project.menu.group=Application
+project.menu.comment=axl Version 0.99
+project.menu.icon=
+project.menu.need.terminal=0
+
+project.configure.options=--prefix=/home/zbigg
+
+anjuta.program.arguments=
+
+project.config.blocked=1
+
+project.config.disable.overwriting=1 1 1 1 1 1 1 1 1 
+project.config.extra.modules.before=
+project.config.extra.modules.after=
+
+module.include.name=.
+module.include.type=
+module.include.expanded=0
+module.include.files=\
+	build/dev-cpp/config.h\
+	build/dev-cpp/dconfig.h\
+	build/msvc/config.h\
+	build/msvc/dconfig.h\
+	common/dlx.h\
+	common/sbtree.h\
+	common/sbuffer.h\
+	common/sgetopt.h\
+	common/slist.h\
+	common/smap.h\
+	common/sstack.h\
+	common/sstr.h\
+	common/zansic.h\
+	common/zdefs.h\
+	common/zlinkdll.h\
+	common/zmod.h\
+	common/zpio.h\
+	common/zpio_i.h\
+	common/zpiocpp.h\
+	common/zprintf.h\
+	common/zsystype.h\
+	common/ztools.h\
+	common/ztools_i.h\
+	libxl/abc.h\
+	libxl/arch.h\
+	libxl/axl_i.h\
+	libxl/codegen.h\
+	libxl/grammar.h\
+	libxl/lex.h\
+	libxl/lexfunc.h\
+	libxl/parse.h\
+	libxl/proc.h\
+	libxl/tools.h\
+	libxl/treegen.h\
+	libxl/vm.h\
+	libxl/xlang.h\
+	libxl/xlmap.h\
+	libxl/xlstr.h\
+	libxl/xltree.h\
+	modules/bench_files/testtime.h\
+	modules/cgi.h\
+	progs/res/resource.h\
+	stdlib/decl.h\
+	config.h\
+	dconfig.hmodule.source.name=.
+
+module.source.name=.
+module.source.type=
+module.source.expanded=1
+module.source.files=\
+	build/msvc/axl/xldict.c\
+	common/sgetopt.c\
+	libxl/misc/heap.c\
+	libxl/zmod/djgpp/dlxgen.c\
+	libxl/zmod/djgpp/dlxload.cpp\
+	libxl/zmod/djgpp/zmodmake.cpp\
+	libxl/zmod/zmod.c\
+	libxl/zpio/unix/upipe.c\
+	libxl/zpio/win/werror.c\
+	libxl/zpio/win/wgetcon.c\
+	libxl/zpio/win/win32err.c\
+	libxl/zpio/win/win32f.c\
+	libxl/zpio/win/wpipe.c\
+	libxl/zpio/win/wstdio.c\
+	libxl/zpio/win/wutil.c\
+	libxl/zpio/ansi.c\
+	libxl/zpio/binio.c\
+	libxl/zpio/bsdsock.c\
+	libxl/zpio/chain.c\
+	libxl/zpio/chconv.c\
+	libxl/zpio/convtabl.c\
+	libxl/zpio/dir.c\
+	libxl/zpio/dstream.c\
+	libxl/zpio/error.c\
+	libxl/zpio/filter.c\
+	libxl/zpio/filter.template.c\
+	libxl/zpio/getcon.c\
+	libxl/zpio/membuf.c\
+	libxl/zpio/netio.c\
+	libxl/zpio/open.c\
+	libxl/zpio/pipe.c\
+	libxl/zpio/posix.c\
+	libxl/zpio/scipher.c\
+	libxl/zpio/smtp.c\
+	libxl/zpio/stdio.c\
+	libxl/zpio/textio.c\
+	libxl/zpio/utils.c\
+	libxl/zpio/vform.c\
+	libxl/zpio/zopen.c\
+	libxl/zpio/zpio.c\
+	libxl/zpio/zpio_m.c\
+	libxl/zpio/zprintf.c\
+	libxl/zpio/zscanf.c\
+	libxl/ztools/sbtree.c\
+	libxl/ztools/sbuffer.c\
+	libxl/ztools/slist.c\
+	libxl/ztools/smap.c\
+	libxl/ztools/sstack.c\
+	libxl/ztools/sstr.c\
+	libxl/ztools/ztools_i.c\
+	libxl/axl_i.c\
+	libxl/builtin.c\
+	libxl/code.c\
+	libxl/codegen.c\
+	libxl/context.c\
+	libxl/except.c\
+	libxl/frame.c\
+	libxl/grammar.y\
+	libxl/lex.c\
+	libxl/lexerr.c\
+	libxl/lexfunc.c\
+	libxl/objarray.c\
+	libxl/object.c\
+	libxl/objenv.c\
+	libxl/objres.c\
+	libxl/proc.c\
+	libxl/symbol.c\
+	libxl/treegen.c\
+	libxl/valmeth.c\
+	libxl/valoper.c\
+	libxl/value.c\
+	libxl/vm.c\
+	libxl/xl.c\
+	libxl/xlasm.c\
+	libxl/xldebug.c\
+	libxl/xlmap.c\
+	libxl/xlstr.c\
+	libxl/xltools.c\
+	libxl/xltree.c\
+	modules/bench_files/testtime.c\
+	modules/stagpar/lextag.c\
+	modules/stagpar/stagpar.c\
+	modules/stagpar/xmldump.c\
+	modules/template/dbms.c\
+	modules/template/res.c\
+	modules/template/simple.c\
+	modules/allegro.c\
+	modules/bench.c\
+	modules/cgi.c\
+	modules/gd.c\
+	modules/mysql.c\
+	modules/postgres.c\
+	modules/readline.c\
+	modules/sqlite.c\
+	modules/unix.c\
+	progs/skel/mod.c\
+	progs/axl_mksgml.c\
+	progs/axl.c\
+	stdlib/dump.c\
+	stdlib/io.c\
+	stdlib/mod.c\
+	stdlib/string.c
+
+module.pixmap.name=pixmaps
+module.pixmap.type=
+module.pixmap.expanded=0
+module.pixmap.files=
+
+module.data.name=.
+module.data.type=
+module.data.expanded=1
+module.data.files=\
+	configure.in\
+	Makefile.in\
+	libxl/Makefile.in\
+	progs/Makefile.in\
+	modules/Makefile.in\
+	doc/Makefile.in
+
+module.help.name=.
+module.help.type=
+module.help.expanded=0
+module.help.files=
+
+module.doc.name=.
+module.doc.type=
+module.doc.expanded=1
+module.doc.files=\
+	doc/axldoc.sgml\
+	doc/docinfo.sgml\
+	doc/old_axl_api_ref.sgml\
+	doc/part1.sgml\
+	doc/part2.sgml\
+	doc/part3.sgml\
+	doc/part4.sgml\
+	AUTHORS\
+	ChangeLog\
+	INSTALL\
+	NEWS\
+	README
+
+module.po.expanded=0
+module.po.files=
+
+compiler.options.supports=
+
+compiler.options.include.paths=\
+	.\
+	..
+
+compiler.options.library.paths=
+
+compiler.options.libraries=
+compiler.options.libraries.selected=
+
+compiler.options.defines=\
+	HAVE_CONFIG_H
+
+compiler.options.warning.buttons=0 0 1 1 0 1 0 0 0 0 0 0 0 1 0 0 
+
+compiler.options.optimize.buttons=0 0 1 0 
+
+compiler.options.other.buttons=1 0 
+
+compiler.options.other.c.flags=
+
+compiler.options.other.l.flags=
+
+compiler.options.other.l.libs=
+
+project.source.paths=\
+	libxl
+

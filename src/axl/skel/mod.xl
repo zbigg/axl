@@ -1,0 +1,42 @@
+#
+# @MOD_NAME@.xl
+    #
+    # Include file for @MOD_NAME@ module.
+    #
+    
+    ## 	=Module @MOD_NAME@
+    ##    
+    ##	Here put description of the @MOD_NAME@ module.
+    
+    
+    ## 	=Function @MOD_NAME@_func
+    ##     return hello message
+    ## 	=Synopsis
+    ##	  |mixed @MOD_NAME@_func ()
+    ##
+    ##	=Description
+    ##	    Returns _welcome_ message.
+    ##
+    ##	=Errors	
+    ##	    none
+    ##
+
+if( ! __mod_@MOD_NAME@_included ) {
+    __mod_@MOD_NAME@_included = 1;
+    
+    /*
+	To import function from your module you must use
+	builtin directive with string parameter of following form :
+	    module_name:symbol_name
+	where
+	    module_name - module file name
+	    symbol_name - name of one of exported symbols from
+			    this module (see entry table in mod.c)
+			    
+	For portability you shouldn't pass extensions (like mod.dll,
+	mod.so) to module_name, because on some platforms modules
+	have different extension.
+	ZMOD engine will look for all possible extensions.
+    */    
+    @MOD_NAME@_func = builtin "@MOD_NAME@:@MOD_NAME@_func";
+}; // force single include

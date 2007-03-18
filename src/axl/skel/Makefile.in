@@ -1,0 +1,217 @@
+#MAKEFILE
+#
+# Platform     : UNIX
+# Source type  : module
+#
+######################################
+#
+# Module: @MOD_NAME@
+#
+# Options
+#	DEBUG=1		compile with debug information (default)
+#	DEBUG=0		compile without debug information
+#	PROF=1		compile with debug information
+#	PROF=0		compile without debug information (default)
+#		By default:
+#		* library is installed to $(prefix)/lib
+#		* headers are installed to $(prefix?)/include
+#		* docs are installed to $(prefix?)/doc/$(LIBRARY_NAME)
+#
+# Targets:
+#    default	: Compile dynamic library.
+#    install	: Install module to $(prefix)/lib/axl
+#                 Install XL Incluedes to $(prefix)/include/axl
+#       	  Usually require root access.
+#
+#    static	: Compile static linked library.
+#    clean	: Remove all intermediate files .
+#    clean_all	: Remove all including libary and depandency files.
+#
+######################################
+
+# Default:  Compile with debugger info
+DEBUG?=1
+
+# Default:  Don't compile & link with profier code
+PROF?=0
+
+# Which type of library we build ? 0 - static, 1 - dynamic(so)
+DYNAMIC?=1
+
+# These are XL Includes instaled in @includedir@/@PACKAGE@
+INCLUDES=@MOD_INCLUDES@
+
+# These are sources of the module.
+SOURCES=@MOD_SOURCES@
+
+# These are objects needed for linking module.
+OBJECTS=@MOD_OBJECTS@
+
+INST_DIR?=/usr/local
+
+SHARED_EXT=.so
+STATIC_EXT=.a
+LIBRARY_NAME=@MOD_NAME@
+LIBVER=@MOD_VERSION@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+# use 'DESTDIR' from environment!
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+
+CC=@CC@
+CPP = @CPP@
+LD=@CC@
+AR=ar
+RANLIB=@RANLIB@
+LN_S = @LN_S@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/misc/mkdirs.sh
+
+#Append include path id needed
+CINCLUDE=-I$(top_srcdir) -I$(top_srcdir)/common -I$(top_srcdir)/libxl
+
+ifeq ($(PROF),1)
+PROF_FLAG=-pg
+LIBNAME=$(LIBRARY_NAME)_p
+LIBS=-lxl
+else
+PROF_FLAG=
+LIBNAME=$(LIBRARY_NAME)
+LIBS=-lxl
+endif
+
+ifeq ($(DEBUG),1)
+CFLAGS=@DEFS@ -g -Wall $(PROF_FLAG) @CFLAGS@ 
+else
+CFLAGS=@DEFS@ -O3 $(PROF_FLAG) @CFLAGS@ 
+endif
+
+# Flags for linker needed to build dynamic library
+LDFLAGS=-shared -nostartfiles $(LIBS) $(PROF_FLAG) -L$(top_srcdir)/libxl
+
+# Flags for ar needed to build static library
+ARFLAGS=
+
+
+
+LIB_OUTPUT_DYN=$(LIBNAME)$(SHARED_EXT)
+LIB_OUTPUT_WITH_VER_DYN=$(LIBNAME)$(SHARED_EXT).$(LIBVER)
+
+LIB_OUTPUT_ST=$(LIBNAME)$(STATIC_EXT)
+LIB_OUTPUT_WITH_VER_ST=$(LIBNAME)$(STATIC_EXT).$(LIBVER)
+
+default: all
+
+ifeq ($(DYNAMIC),1)
+LIB_OUTPUT=$(LIB_OUTPUT_DYN)
+
+all: dynamic
+
+inst_lib: inst_lib_dynamic
+
+else
+LIB_OUTPUT=$(LIB_OUTPUT_ST)
+
+all: static
+
+inst_lib: inst_lib_static
+
+endif
+
+PRODUCTS=$(LIB_OUTPUT)
+
+dynamic : $(LIB_OUTPUT)
+static  : $(LIB_OUTPUT)
+
+$(LIB_OUTPUT_DYN): $(OBJECTS)
+	$(LD) $(LDFLAGS) $(CLIB) $^ -o $@
+
+$(LIB_OUTPUT_WITH_VER_DYN): $(OBJECTS)
+	$(LD) $(LDFLAGS) $(CLIB) $^ -o $@
+
+$(LIB_OUTPUT_ST): $(OBJECTS)
+	$(AR) cru $(ARFLAGS) $(CLIB) $@ $^
+	$(RANLIB) $(LIB_OUTPUT_ST)
+
+inst_lib_dynamic: $(LIB_OUTPUT)
+	@echo Installing module in $(pkglibdir)
+	$(mkinstalldirs) $(pkglibdir)
+	$(INSTALL) $(LIB_OUTPUT) $(pkglibdir)
+
+inst_dev: inst_inc inst_lib
+
+inst_doc : doc
+	@echo Installing documentation
+	@echo WARNING: nothing done
+
+inst_inc:
+	$(mkinstalldirs) $(pkgincludedir)
+	@echo Installing INCLUDES in $(pkgincludedir)
+	@for FILE in $(INCLUDES) ; do \
+	  echo -n "$$FILE "; \
+	  $(INSTALL_DATA) $$FILE $(pkgincludedir) ; \
+	done
+
+doc:
+	@echo Making documentation
+	@echo Here put your code that creates documentation in doc/
+	@echo WARNING: nothing done
+
+clean:
+	rm -f $(OBJECTS)
+
+clean_all:
+	rm -f $(OBJECTS) $(PRODUCTS) 
+	rm -f Makefile
+	echo "" > depend
+
+.cpp.o:
+	$(CXX) $(CFLAGS) $(CINCLUDE) -c $< -o $@
+
+.cc.o:
+	$(CXX) $(CFLAGS) $(CINCLUDE) -c $< -o $@
+
+.c.o:
+	$(CC) $(CFLAGS) $(CINCLUDE) -c $< -o $@	
+
+
+depend:
+	$(CC) $(CINCLUDE) -MM $(SOURCES) > depend
+
+include depend
+
+install: inst_dev
+distclean: clean_all
+
+${top_srcdir}/configure: ${top_srcdir}/configure.in
+	(cd ${top_srcdir}; autoconf ; )
+
+Makefile: Makefile.in ${top_srcdir}/configure
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd ${top_srcdir}; ./config.status ; )
+
+.PHONY: depend

@@ -1,0 +1,70 @@
+.TITLE  {
+	background : #efefff;
+	padding : 8;
+}
+
+.SUBTITLE  {
+	background : #efefff;
+	padding : 6;
+}
+
+.NAVFOOTER,.NAVHEADER  {
+	background : #efefff;
+	font-size : small;
+}
+
+.VARNAME  {
+	font-family : monospace;
+	font-weight : bold;
+}
+
+.SYNOPSIS  {
+	margin-left : 40;
+	background : #efefff;
+	padding : 4;
+	border : solid #c0c0df;
+}
+
+.PROGRAMLISTING  {
+	margin-left : 40;
+	background : #efefff;
+	padding : 4;
+	border : solid #c0c0df;
+}
+
+.LEGALNOTICE  {
+	font-family : fixed;
+	padding : 6;
+	background : #efefff;
+}
+
+H1,H2,H3  {
+	background : #efefff;
+	padding : 3;
+	border-left-width : 20;
+	border-style : solid;
+	border-color : #c0c0df;
+}
+
+P  {
+	margin-left : 20;
+}
+
+DT  {
+	font-weight : bold;
+	background-color : #efefff;
+	padding : 4;
+}
+
+DL  {
+	border : solid #efefff;
+	margin-left : 25;
+}
+
+table.important  {
+	margin-left : 40;
+	padding : 4;
+	border : solid #fff540;
+	border-left-width : 30;
+}
+

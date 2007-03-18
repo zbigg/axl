@@ -1,0 +1,82 @@
+#!/usr/bin/xparse
+#
+# File:		mysql.xl
+#
+# Id:		$Id: mysql.xl 1.2 03/11/27 22:34:06+01:00 zbigg@zbigg.(none) $
+#
+# Copyright:
+#
+#   This program is Copyright(c) Zbigniew Zagorski 2001.
+#   All rights reserved, and is distributed as free software under the 
+#   license in the file "LICENSE", which is included in the distribution.
+if( ! _mysql_included ){
+    _mysql_included = 1;
+    _mysql_creator = builtin "mysql:create_mysql_object" safe;
+    if( ! _mysql_creator ) {
+	mysql = new;
+	mysql.connect = func() {
+	    return 0;
+	};
+	mysql.error = "MySQL module can't be loaded";
+    } else {
+	mysql = _mysql_creator();
+    };
+    /*
+	mysql.connect( dbname, host, port, login, pwd ) : connection
+	mysql.error : string
+	
+	connection.exec(query) : result
+	connection.error : string
+	connection.close()
+	
+	result.close()
+	    
+	result.ntuples : integer
+	    Obtain number of tuples in thre result.
+	    
+	result.nfields : integer
+	    Obtain number of fields in thre tuple.
+	    
+	result.getvalue( tuple, field ) : string
+	    Obtain value of pointed by tuble and record numbers.
+	    
+	result.fname( i ) : string		
+	    Obtain name of i-th field.
+	    
+	result.begin() : seek result to start.
+
+	result.get() : get object with fields as in each record
+	resulr.empty() : test if pointer is at end of result
+    */
+    mysql.name = "MySQL";
+    with ( mysql ) {
+	Bconnect = connect;
+	connect = func( dbname, host, port, login, pwd ) {
+	    conn = Bconnect( dbname,host,port,login,pwd );
+	    if( !conn )
+		return 0;
+	    conn.Bexec = conn.exec;
+	    conn.exec = func(query) {
+		result = Bexec(query);
+		if( !result ) return 0;
+		result.begin = func() { 
+		    this._row_number = 0; 
+		    this.robj = 0;
+		};
+		result.get = func() {
+		    if( _row_number < ntuples ) {
+			if( !robj )
+			    robj = new;
+			for( i = 0; i < nfields; i+=1 )
+			    robj[ fname(i) ] = getvalue( _row_number,i );
+			_row_number+=1;
+			return robj;
+		    } else return 0;
+		};
+		result.empty = func() { return _row_number >= ntuples; };
+		return result;
+	    }; // connection.exec
+	    return conn;
+	}; // mysql.connect
+    }; // with mysql
+};

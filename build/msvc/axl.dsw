@@ -1,0 +1,183 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "InstallBin"=.\InstallBin.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    InstallBin
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name axl
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "axl"=.\axl\axl.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name stdlib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_cgi
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "libxl"=.\libxl\libxl.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    libxl
+    ..\..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name zcompat
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_cgi"=.\mod_cgi\mod_cgi.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    mod_cgi
+    ..\..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libxl
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "sqlite"=.\sqlite\sqlite.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    sqlite
+    ..\..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libxl
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "stagpar"=..\SRC\ZCOMPAT\stagpar\stagpar.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libxl
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "stdlib"=.\stdlib\stdlib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    stdlib
+    ..\..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libxl
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "wxAxl"=.\wxAxl\wxAxl.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    wxAxl
+    .\wxaxl
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libxl
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name zcompat
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "zcompat"=.\zcompat\zcompat.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    zcompat
+    ..\..
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

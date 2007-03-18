@@ -1,0 +1,9 @@
+General TODO for axl:
+
+libxl:
+	* type XLV_FUNC_BUILTIN : should pass name as xl_str !
+
+axl:
+
+stdaxl:
+

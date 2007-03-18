@@ -1,0 +1,20 @@
+
+##	=Module AXL ValueAPI
+##		API for manipualting AXL values
+##
+##
+##	Description ... 
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+
+##	=Function xlv_new
+##		create new xl_value , type nil
+##
+##	=Description
+##	    Create new <map> objct.
+##	    The new object has empty members map.
+##

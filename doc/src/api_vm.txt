@@ -1,0 +1,19 @@
+
+##	=Module AXL Virtual Machine API
+##		API for executing AXL scripts
+##
+##
+##	Description ... 
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+##	blah blahblah blahblah blahblah blah blah blah blah blahblah blah
+
+##	=Function xlvm_run
+##		no doc
+##
+##	=Description
+##		no doc
+##

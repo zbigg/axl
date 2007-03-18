@@ -1,0 +1,43 @@
+#!/usr/bin/env axl
+
+include "postgres.xl";
+include "stdio";
+
+c = postgres.connect(arg[1]);
+if( c ) {
+    echo "Connection OK\n";
+    c.exec_show = func( query ) {
+	result = c.exec(query);
+	if( ! result ) {
+	    echo {?query failed: $c.error;\n?};
+	} else with( result ) {
+	    if( result.nfields > 0 ) {
+		echo {?query: tup: $ntuples; flds: $nfields;\n?};
+		for( i=0; i < nfields; i+=1 ) 
+		    echo fname(i), "\t|";
+		echo "\n---------------------------------------------\n";
+		for( j=0; j < ntuples; j+=1 ) {
+		    for( i=0; i < nfields; i+=1 ) 
+			echo getvalue(j,i), "\t|";
+		    echo "\n";
+		};
+	    } else {
+		echo "query result is empty\n";
+	    };
+	};
+    };
+    
+    do {
+	cont = 1;
+	echo ">"; query = axl.io.gets();
+	switch( query ) {
+	    == -1 -> cont = 0;
+	    == "\\q" -> cont = 0;
+	    default -> 
+		if( query ) 
+		    c.exec_show(query);
+	};	
+    } while ( cont );
+} else {
+    echo {?$arg[0];: connection failed: $postgres.error;\n?};
+};

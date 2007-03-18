@@ -1,0 +1,12 @@
+#!/usr/bin/xparse
+include "stdtime";
+
+with ( std.time.local() ) {
+    echo {?\
+unpacked = $day;.$month;.$year; $hour;:$minute;:$second;
+stamp    = $stamp();
+asc	 = $asctime();
+fmt	 = $fmt("%d.%m.%Y %T");
+locale	 = $fmt("%c");
+?};
+};

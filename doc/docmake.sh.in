@@ -1,0 +1,66 @@
+#!/bin/sh
+############################################################
+#
+#  create documentation using docbook-utils or xmlto
+#
+#  Id: $Id: docmake.sh.in 1.3 04/03/13 02:54:02+01:00 zbigg@nowy.dom $
+#
+#  Author: Zbigniew Zagorski <zzbigg@o2.pl>
+#
+############################################################
+
+srcdir=@srcdir@
+
+DB2HTML="@DOCBOOK2HTML@"
+DB2PDF="@DOCBOOK2PDF@"
+DB2MAN="@DOCBOOK2MAN@"
+
+XMLTO="@XMLTO@"
+XMLTO_SUPPORTED_FORMATS="html html-nochunks htmlhelp man pdf ps"
+TYPE=$1
+SOURCE=$2
+
+[ -d $TYPE ] || mkdir $TYPE
+
+if test "X$XMLTO" != "X" ; then
+    if echo "$XMLTO_SUPPORTED_FORMATS" | grep -q $TYPE ; then
+        echo "$0: using xmlto & xsltproc - creating $TYPE documenation"
+	if [ -f $srcdir/style-$TYPE.xsl ] ; then
+	    XSL="-x $srcdir/style-$TYPE.xsl"
+	    echo "$0: using stylesheet style-$TYPE.xsl"
+	fi
+	$XMLTO $XSL $TYPE -o $TYPE $SOURCE
+	exit $?
+    else
+	echo "$0: $XMLTO: format $TYPE not supported, skipping"
+    fi
+fi
+
+if test -n "$DB2HTML" -a $TYPE = html ; then
+    echo "$0 using docbook-utils - $DB2HTML for creating HTML documentation"
+    cp $srcdir/style.dsl .
+    cp style.dsl html
+    $DB2HTML --dsl "style.dsl#html" -o html $SOURCE
+    rm html/style.dsl
+    exit 0
+fi
+
+if test -n "$DB2MAN" -a $TYPE = man ; then
+    echo "$0 using docbook-utils - $DB2MAN for creating man documentation"
+    cp $srcdir/style.dsl .
+    cp style.dsl man
+    $DB2HTML --dsl "style.dsl#print" -o man $SOURCE
+    rm man/style.dsl
+    exit 0
+fi
+
+if test -n "$DB2MAN" -a $TYPE = pdf ; then
+    echo "$0 using docbook-utils - $DB2PDF for creating pdf documentation"
+    cp $srcdir/style.dsl .
+    cp style.dsl pdf
+    $DB2HTML --dsl "style.dsl#print" -o pdf $SOURCE
+    rm pdf/style.dsl
+    exit 0
+fi
+echo "$0: don't know how to build $TYPE"
+exit 0

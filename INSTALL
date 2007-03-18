@@ -1,0 +1,75 @@
+This is INSTALL file for
+
+			    AXL
+		The Applicaion EXtension Language
+
+1. System wide installation.
+    For information how to build in other than UNIX (including MinGW32 and
+	Cygwin) environments see build/ENV/readme.txt.
+
+    Simple install that should work on most unix-like systems.
+    Makefile/configure build works also on Mingw32 Platform.
+
+		$tar zxvf axl-VER.tar.gz
+		$cd axl-VER
+		$mkdir bld
+		$cd bld
+		$../configure
+		$make
+    	Then as root:
+		#make install
+
+    This package is under development and it's possible that you
+    encounter compile or make errors especialy or non-linux systems.
+    If make doesn't work try gmake which exists on some non-gnu
+    systems as BSD-family.
+
+    Package prefix - a root directory - defaults to /usr/local so
+    files will be installed in
+		/usr/local/bin		- programs: axl, axl_config etc.
+		/usr/local/lib		- libxl.so
+		/usr/local/lib/axl	- modules: stdaxl.so and others
+		/usr/local/include	- AXL C interface headers
+		/usr/local/include/axl	- AXL include files
+
+    If you want to change installation root directory you should pass
+    	--prefix=mydir argument to configure script eg:
+		$./configure --prefix=/mydir
+
+    If $prefix/lib isn't configured as search directory for shared libraries
+    please add it to
+		* /etc/ld.so.conf	- if it exists
+		* LD_LIBRARY_PATH	- environment variable
+
+2. Installation in your home directory.
+
+	$./configure --prefix=$HOME
+	$make ; make install
+	$echo axl_config --env >> ~/.bashrc
+
+    If you're using shell other than bash you can change ~/.bashrc
+    to your shell specific strting script.
+    If your shell doesn't support
+	export VARNAME="value"
+    then examine axl_config --env output and write some equal code in your
+    shell laguage or just remember that all those environment variables
+    must be set if you want to use AXL or compile with AXL.
+
+3.  Installation of documentaion.
+    To build documentation from DocBook SGML you must have DocBook,
+    DocBook Stylesheets, DocBook Utils , Jade installed on your system. See
+
+		http://www.docbook.org
+
+    If you have these goto doc directory and type:
+		$make
+
+    and as root:
+		#make install-man
+		#make install-html
+
+    Manual pages for default go to $prefix/share/man/.
+    HTML documentaion goes to $prefix/share/doc/axl/html.
+
+    For information how to get pre-built documentation see README.
+

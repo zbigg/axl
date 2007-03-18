@@ -1,0 +1,77 @@
+#####################################
+# File	: makeenv.in
+#
+# Author: Zbigniew Zagorski <longmanz@polbox.com>
+#
+# Id    : $Id: makeenv.in 1.1 03/10/16 00:02:54+02:00 zbigg@marl.(none) $
+#
+# Purpose:
+#		Environment settings for other makefiles.
+#
+######################################
+
+# These should apear before including makeenv
+#
+#Name of subdirectory relative to top_srcdir
+#subdir =
+#Top source directory relative to current
+#top_builddir = ../..
+#
+PROFILE=@PROFILE@
+SHARED=@SHARED@
+SHARED_MODULES=@SHARED_MODULES@
+DEBUG=@DEBUG@
+
+SHARED_EXT=@SHARED_EXT@
+STATIC_EXT=.a
+XL_LIBNAME=@LIBNAME@
+XL_VERSION=@VERSION@
+XL_VERSION_MAJOR=@VERSION_MAJOR@
+
+#TODO: remove this and dependancy on this
+LIBNAME=@LIBNAME@
+VERSION=@VERSION@
+VERSION_MAJOR=@VERSION_MAJOR@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+CC=@CC@
+CPP = @CPP@
+LD=@CC@
+AR=ar
+RANLIB=@RANLIB@
+LN_S = @LN_S@
+YACC = @YACC@
+FLEX = @FLEX@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+DLLTOOL=@DLLTOOL@
+CP = @CP@
+CP_R = @CP_R@
+TAR = @TAR@
+mkinstalldirs = $(SHELL) $(top_srcdir)/misc/mkdirs.sh
+
+distdir=$(top_builddir)/@PACKAGE@-@VERSION@
+cur_distdir=$(distdir)/$(subdir)
+

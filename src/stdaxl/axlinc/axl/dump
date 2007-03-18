@@ -1,0 +1,5 @@
+#!/usr/local/bin/axl
+_dump_object = builtin "stdaxl:dump_object";
+_dump_target = builtin "stdaxl:dump_target";
+_dump_value = builtin "stdaxl:dump_value";
+_dump_ctx = builtin "stdaxl:dump_ctx";

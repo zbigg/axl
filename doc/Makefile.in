@@ -1,0 +1,158 @@
+#
+#	File:		Makefile.in
+#
+#	Id:		$Id: Makefile.in 1.7 04/02/24 01:39:32+01:00 zbigg@marl.(none) $
+#
+#	Project:	axl
+#
+#	Source type:	documentation
+#
+BUILD_ENTITIES=\
+	axl-stdtime.sgml	\
+	axl-stdio.sgml		\
+	cmd-axl.sgml		\
+	cmd-axl-mksgml.sgml	\
+	cmd-axl-config.sgml	\
+	xlang-api.sgml		\
+	zmod-api.sgml
+
+#	api-obj.sgml		\
+
+ENTITIES=$(BUILD_ENTITIES) axldoc.sgml axl.dsl entities.sgml	\
+	docinfo.sgml part1.sgml part2.sgml part4.sgml part3.sgml old_axl_api_ref.sgml
+
+srcdir=@srcdir@
+VPATH=@srcdir@
+top_srcdir=@top_srcdir@
+top_builddir=..
+prefix = @prefix@
+datadir = @datadir@
+mandir = @mandir@
+docdir = @datadir@/doc/@PACKAGE@-@VERSION@
+
+
+DOCGEN=$(SHELL) ./docmake.sh
+
+
+MAKELINKS = $(top_srcdir)/misc/makelinks
+mkinstalldirs = $(SHELL) $(top_srcdir)/misc/mkdirs.sh
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+
+AXL_MKSGML=$(top_builddir)/progs/axl_mksgml
+AXLDOC2SGML=$(AXL_MKSGML) -i -c -nxh
+
+default: doc
+doc: htm man
+
+htm: html/index.html
+man: man/axl.1
+pdf: pdf/axldoc.pdf
+
+sources:
+	cp -f $(srcdir)/*.sgml .
+
+htmlhelp/index.html: $(ENTITIES) sources
+	$(DOCGEN) htmlhelp axldoc.sgml
+	cp $(srcdir)/style.css htmlhelp
+
+html/index.html: $(ENTITIES) sources
+	$(DOCGEN) html axldoc.sgml
+	cp $(srcdir)/style.css html
+
+pdf/axldoc.pdf: $(ENTITIES) sources
+	$(DOCGEN) pdf axldoc.sgml
+
+man/axl.1: $(ENTITIES) sources
+	$(DOCGEN) man axldoc.sgml
+    
+#	$(MAKELINKS) -d man < man/manpage.links
+
+entities.sgml: Makefile
+	@echo creating $@
+	@echo -n "" > xentities.sgml
+	@for F in $(BUILD_ENTITIES) ; do				\
+	    E=`echo -n $$F | sed "s/\.sgml//"` ; 			\
+	    echo "<!ENTITY $$E SYSTEM \"$$F\">" >> xentities.sgml ;	\
+	done 
+	@diff -w -q $@ xentities.sgml 2>&1 > /dev/null || \
+	    { echo "updating $@" ; cat xentities.sgml > entities.sgml ; }
+	@rm -f xentities.sgml
+
+zmod-api.sgml: $(top_srcdir)/src/zcompat/zmod.c $(AXL_MKSGML)
+	$(AXLDOC2SGML) -t reference $< > $@
+
+axl-stdtime.sgml: $(top_srcdir)/stdlib/axlinc/axl/time $(AXL_MKSGML)
+	$(AXLDOC2SGML) -t reference $< > $@
+
+api-obj.sgml: $(srcdir)/src/api_obj.txt $(AXL_MKSGML)
+	$(AXLDOC2SGML) -t reference $< > $@
+
+axl-stdio.sgml: $(top_srcdir)/stdlib/axlinc/axl/io $(AXL_MKSGML)
+	$(AXLDOC2SGML) -t reference $< > $@
+
+cmd-axl.sgml: $(top_srcdir)/progs/axl.c $(AXL_MKSGML)
+	$(AXLDOC2SGML) $< > $@
+
+cmd-axlc.sgml: $(top_srcdir)/progs/axlc.c $(AXL_MKSGML)
+	$(AXLDOC2SGML) $< > $@
+
+cmd-axl-mksgml.sgml: $(top_srcdir)/progs/axl_mksgml.l $(AXL_MKSGML)
+	$(AXLDOC2SGML) $< > $@
+
+cmd-axl-config.sgml: $(top_srcdir)/progs/axl_config.in $(AXL_MKSGML)
+	$(AXLDOC2SGML) $< > $@
+
+xlang-api.sgml: $(top_srcdir)/include/axl/xlcore.h $(AXL_MKSGML)
+	$(AXLDOC2SGML) -t reference $< > $@
+
+$(AXL_MKSGML): $(top_srcdir)/progs/axl_mksgml.l
+	$(MAKE) -C ../progs axl_mksgml
+
+distclean: clean
+	-rm -f Makefile
+
+clean:
+	-rm -f $(BUILD_ENTITIES) man/*.3 man/*.1 man/manpage.refs man/manpage.links html/*.html *.pdf *.out
+
+install: install-man install-html install-pdf
+
+install-man: man
+	@echo Installing manpages to section1
+	$(mkinstalldirs) $(mandir)/man1
+	@for X in man/*.1 ; do \
+	    echo -n "$$X " ; \
+	    $(INSTALL_DATA) $$X $(mandir)/man1 ; \
+	done
+	@echo
+	@echo Installing manpages to section1
+	$(mkinstalldirs) $(mandir)/man3
+	@for X in man/*.3 ; do \
+	    echo -n "$$X " ; \
+	    $(INSTALL_DATA) $$X $(mandir)/man3 ; \
+	done
+	@echo 
+
+install-html: htm
+	$(mkinstalldirs)  $(docdir)/html
+	cp html/*.html html/*.css $(docdir)/html
+
+install-pdf: pdf
+	$(mkinstalldirs)  $(docdir)
+	$(INSTALL_DATA) axldoc.pdf $(docdir)
+
+    
+${top_builddir}/config.h: ${top_srcdir}/config.h.in
+	@echo Rebuilding config.h
+	(cd $(top_builddir) ; ./config.status ; )
+
+${top_srcdir}/configure  $(top_builddir)/config.status: ${top_srcdir}/configure.in
+	@echo Rebuilding configure
+	(cd ${top_srcdir}; autoconf ; )
+	(cd ${top_builddir}; ./config.status --recheck ; )
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd $(top_builddir) ; ./config.status ; )
+
+.PHONY: $(AXL_MKSGML)

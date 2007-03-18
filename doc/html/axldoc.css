@@ -1,0 +1,41 @@
+.NAVHEADER  {
+	background : #e0e0ff;
+	padding : 4;
+}
+
+.TITLE  {
+	background : #e0e0ff;
+	padding : 8;
+}
+
+.SUBTITLE  {
+	background : #e0e0ff;
+	padding : 4;
+}
+
+.NAVFOOTER  {
+	background : #e0e0ff;
+	padding : 4;
+}
+
+.SYNOPSIS  {
+	background : #e0e0ff;
+	padding : 4;
+}
+
+.PROGRAMLISTING  {
+	background : #e0e0ff;
+	padding : 4;
+}
+
+.LEGALNOTICE  {
+	font-family : fixed;
+	padding : 6;
+	background : #e0e0ff;
+}
+
+H1  {
+	background : #e0e0ff;
+	padding : 3;
+}
+

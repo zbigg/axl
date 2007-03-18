@@ -1,0 +1,4 @@
+#! /usr/bin/env axl
+{
+	x=func(a)->(a+1);
+};

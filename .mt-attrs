@@ -1,0 +1,47 @@
+   file "build/anjuta/prepare_project.sh"
+execute "true"
+
+   file "configure"
+execute "true"
+
+   file "doc/docmake.sh.in"
+execute "true"
+
+   file "misc/bkupdchangelog"
+execute "true"
+
+   file "misc/cfg_update.sh"
+execute "true"
+
+   file "misc/config.guess"
+execute "true"
+
+   file "misc/config.sub"
+execute "true"
+
+   file "misc/install.sh"
+execute "true"
+
+   file "misc/makelinks"
+execute "true"
+
+   file "misc/mkdirs.sh"
+execute "true"
+
+   file "tests/all_featrure.xl"
+execute "true"
+
+   file "tests/array.xl"
+execute "true"
+
+   file "tests/matrix.xl"
+execute "true"
+
+   file "tests/return_code.xl"
+execute "true"
+
+   file "tests/test_oper.xl"
+execute "true"
+
+   file "tests/test_template.xl"
+execute "true"

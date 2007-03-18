@@ -1,0 +1,25 @@
+#!/bin/sh
+############################################################
+#
+#  Update static ChangeLog from bk changes !
+#
+#  Id: $Id: bkupdchangelog 1.1 04/01/28 21:18:12+01:00 zbigg@nowy.dom $
+#
+#  Author: Zbigniew Zagorski <zbig@pentagon.eu.org>
+#
+############################################################
+FILE=${1-ChangeLog}
+[ -f $FILE ] || { echo "$0: $FILE don't exists" >&2 ; exit 1 ; } 
+
+LV=`cat $FILE | grep ChangeSet@ |sed -e 's/.*ChangeSet@\([0-9.][0-9.]*\).*/\1/' | head -n 1`
+echo "Last changeset :$LV" >&2
+LN=`bk changes -r$LV | wc -l`
+bk changes -r$LV.. > TMP
+XN=`cat TMP | wc -l`
+HN=$[ $XN - $LN - 1 ]
+cat TMP | sed -e 's/^\(.\)/    \1/'| head -n $HN > $FILE.new
+rm -f TMP
+echo >> $FILE.new
+cat $FILE >> $FILE.new
+
+mv $FILE.new $FILE

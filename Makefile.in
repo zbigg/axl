@@ -1,0 +1,196 @@
+######################################
+#
+# File		: Makefile.in
+# Id            : $Id: Makefile.in 1.6 04/05/22 20:40:51+02:00 zbigg@veinard.dom $
+# Author	: Zbigniew Zagorski <zzbigg@o2.pl>
+#
+#####################################
+#
+# Options
+#	DEBUG=1		compile with debug information (default)
+#	DEBUG=0		compile without debug information
+#	PROF=1		compile with debug information
+#	PROF=0		compile without debug information (default)
+#	INST_DIR=dir	use dir as instalation directory
+#			(default (/usr/lib).
+#
+# Targets:
+#    default	: Compile dynamic library.
+#    inst	: Install libary to default place (/usr/lib).
+#                 Require root access.
+#    static	: Compile static linked library.
+#    clean	: Remove all intermediate files .
+#    clean_all	: Remove all including libary and depandency files.
+#
+######################################
+
+# Default:  Compile with debugger info
+DEBUG?=1
+# Default:  Don't compile & link with profier code
+PROF?=0
+
+CUR_DIR=$(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
+
+SUBDIRS=src modules
+
+EXTRA_DIST=sample include doc common build tests\
+	AUTHORS NEWS ChangeLog README INSTALL STATUS VERSION uconfig.h
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = .
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+# use 'DESTDIR' from environment!
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+CC = @CC@
+CPP = @CPP@
+INSTALL = @INSTALL@
+INSTALL_INFO = @INSTALL_INFO@
+
+export DEBUG PROF
+
+default : all
+
+doc:
+	$(MAKE) -C doc $@
+
+GENERATED_FILES=\
+	config.cache config.log config.status config.h\
+	tags Makefile dconfig.h
+
+distclean:
+	@for SUB in $(SUBDIRS) ; do 				\
+	    [ -f $$SUB/Makefile ] || ./config.status ;		\
+	    $(MAKE) -C $$SUB $@ || exit $$? ;  			\
+	done
+	-rm -f common/*.o core *.so *.a
+	-rm -f $(GENERATED_FILES)
+
+clean all clean_all inst depend install : dconfig.h
+	@for SUB in $(SUBDIRS) ; do				\
+	    [ -f $$SUB/Makefile ] || ./config.status ;		\
+	    $(MAKE) -C $$SUB $@ || exit $$? ;			\
+	done
+
+dconfig.h: Makefile
+	@echo "/* Directory Config header */"			>  dconfig.tmp
+	@echo "/* generated automaticaly by Makefile */"	>> dconfig.tmp
+	@echo "/* Installation prefix */"			>> dconfig.tmp
+	@echo "#define PACKAGE_PREFIX \"${prefix}\""		>> dconfig.tmp
+	@echo "/* Binaries directory */"			>> dconfig.tmp
+	@echo "#define PACKAGE_BINDIR \"${bindir}\""		>> dconfig.tmp
+	@echo "/* System binaries directory */"			>> dconfig.tmp
+	@echo "#define PACKAGE_SBINDIR \"${sbindir}\""		>> dconfig.tmp
+	@echo "/* Libraries directory */"			>> dconfig.tmp
+	@echo "#define PACKAGE_LIBDIR \"${libdir}\""		>> dconfig.tmp
+	@echo "/* Data directory */"				>> dconfig.tmp
+	@echo "#define PACKAGE_DATADIR \"${datadir}\""		>> dconfig.tmp
+	@echo "/* Config directory */"				>> dconfig.tmp
+	@echo "#define PACKAGE_CONFDIR \"${sysconfdir}\""	>> dconfig.tmp
+	@echo "/* Include directory */"				>> dconfig.tmp
+	@echo "#define PACKAGE_INCDIR \"${includedir}\""	>> dconfig.tmp
+	@echo "/* Package private include directory */"		>> dconfig.tmp
+	@echo "#define PACKAGE_PKG_INCDIR \"${pkgincludedir}\"" >> dconfig.tmp
+	@echo "/* Package private libraries directory */"	>> dconfig.tmp
+	@echo "#define PACKAGE_PKG_LIBDIR \"${pkglibdir}\""	>> dconfig.tmp
+	@echo "/* Package private data directory */"		>> dconfig.tmp
+	@echo "#define PACKAGE_PKG_DATADIR \"${pkgdatadir}\""	>> dconfig.tmp
+	@diff -w -q $@ dconfig.tmp 2>&1 > /dev/null || \
+	    { echo "Updating $@" ; cat dconfig.tmp > dconfig.h ; }
+	@rm dconfig.tmp
+
+
+STD_FILES=misc configure.in configure Makefile.in config.h.in aclocal.m4
+DIST_FILES=$(STD_FILES) $(SUBDIRS) $(EXTRA_DIST)
+
+mkinstalldirs = $(SHELL) $(top_srcdir)/misc/mkdirs.sh
+
+distdir=@PACKAGE@-@VERSION@
+cur_distdir=$(distdir)/$(subdir)
+
+CP = @CP@
+CP_R = @CP_R@
+TAR = @TAR@
+
+#
+# Distribution
+#
+dist-gz: distdir
+	@echo -n "Compressing to $(distdir).tar.gz ..."
+	@GZIP="--best" $(TAR) chozf $(distdir).tar.gz $(distdir)
+	@echo " done"
+
+dist-bz: distdir
+	@echo -n "Compressing to $(distdir).tar.bz2 ..."
+	@$(TAR) chof - $(distdir) | bzip2 -f > $(distdir).tar.bz2
+	@echo " done"
+
+dist: dist-gz remove-distdir
+
+dist-all: dist-gz dist-bz2 remove-distdir
+
+remove-distdir:
+		@rm -rf $(distdir)
+
+distdir:
+	$(mkinstalldirs) $(distdir)
+	@echo -n "Building distribution for ... "
+	@for FILE in $(DIST_FILES) ; do 			\
+	    echo -n "$$FILE " ; 				\
+	    if [ -d $(srcdir)/$$FILE ] ; then 			\
+		$(CP_R) -f $(srcdir)/$$FILE  $(distdir) ; 	\
+	    else 						\
+		$(CP) -f $(srcdir)/$$FILE $(distdir) ;		\
+	    fi 	;						\
+	done
+	@echo " ... done"
+	@echo "Removing CVS,SCCS and{arch} Files from distribution ..."
+	@for FILE in `find $(distdir) | grep -i -E "(CVS|SCCS|{arch})"` ; do	\
+	    if [ -d $$FILE ] ; then 				\
+		rm -Rf $$FILE;					\
+	    fi;							\
+	done; 							\
+
+tags:
+	ctags `find $(top_srcdir) -name "*.c" -o -name "*.h" -o -name "*.cpp" |  grep -v -E "(CVS|SCCS|{arch})"`
+
+#
+# Keep Makefile recent
+#
+
+${top_builddir}/config.h: ${top_srcdir}/config.h.in
+	@echo Rebuilding config.h
+	(cd $(top_builddir) ; ./config.status ; )
+
+${top_srcdir}/configure  $(top_builddir)/config.status: ${top_srcdir}/configure.in
+	@echo Rebuilding configure
+	(cd ${top_srcdir}; autoconf ; )
+	(cd ${top_builddir}; ./config.status --recheck ; )
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd $(top_builddir) ; ./config.status ; )
+
+
+
+

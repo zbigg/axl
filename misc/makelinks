@@ -1,0 +1,148 @@
+#!/bin/sh
+############################################################
+#
+#  Make symlinks as linsted in manpage.links
+#
+#    	Version: 0.9.0
+#	Date: June 20 2002
+#
+# Zbigniew Zagorski <longmanz@polbox.com>
+#
+############################################################
+#
+# Usage: makelinks [options] [ < manpage.links ]
+# Options:
+#    (-d|--directory) name - name of directory where mangpages and links reside
+#    (-g|--man-gzipped) - manpages are gzipped
+#    (-b|--backup)   - backup files
+#    (s|--simulate)  - don't do anything, only check and report what should be 
+#                     done
+#    (f|--file) name - read input from file
+############################################################
+
+DEBUG=1
+PNAME=`basename $0` 
+
+usage() {
+cat << EOF
+Usage: $PNAME [options] [< manpage.links]
+Options:
+    (-d|--directory) name - name of directory where mangpages and links reside
+    (-g|--man-gzipped) - manpages are gzipped
+    (-b|--backup)   - backup files
+    (s|--simulate)  - don't do anything, only check and report what should be 
+                     done
+    (f|--file) name - read input from file
+EOF
+    exit 1
+}
+SUBDIRS=${SUBDIRS-}
+SIMULATE=${SIMULATE-}
+BACKUP=${BACKUP-}
+MAX_BACKUP=${MAX_BACKUP-1}
+GZIPPED=${GZIPPED-}
+DIRECTORY=${DIRECTORY-}
+MAKEDEP=${MAKEDEP-}
+
+INPUT=""
+INPUT_STDIN=1
+OPTS=
+
+while [ $1 ] ; do
+    case $1 in
+	-f|--file)
+	    [ ! -f $2 ] && { 
+		echo "$PNAME: $2: no such file or directory" >&2
+		exit 1
+	    }
+	    INPUT=$2
+	    shift 1
+	    ;;
+	-d|--directory)
+	    [ ! -d $2 ] && {
+		echo "$PNAME: $2 no such file or directory" >&2
+		exit 1
+	    }
+	    DIRECTORY="$2/"
+	    shift 1
+	    ;;
+	-g|--man-gzipped)
+	    GZIPPED=1
+	;;
+	-s|--simulate)
+	    OPTS="$OPTS $1"
+	    SIMULATE=1
+	;;
+	-i|--stdin)
+	    INPUT_STDIN=1
+	;;
+	-ns|--nosimulate)
+	    SIMULATE=
+	;;
+	-b|--backup)
+	    BACKUP=1
+	;;
+	-nb|--no-backup)
+	    BACKUP=
+	;;
+	*)
+	    usage
+	;;
+    esac
+    shift 1
+done
+
+mkpath() 
+{
+    dir=$1
+    [ -d $dir ] && return 0
+    parent=`dirname $dir`
+    [ ! -d $parent ] && mkpath $parent
+    mkdir $dir
+}
+
+backup()
+{
+    N=0
+    while [ -f $1.mirb-$N ] ; do
+	[ $[$N >= $MAX_BACKUP] == "1" ] && break
+	N=$[$N+1]
+    done
+    cp --force $1 $1.mirb-$N
+}
+
+n="0"
+for x in `cat $INPUT`; do
+    if [ "$n" = "0" ]; then
+	first=$x
+	n="1"
+    elif [ "$n" = "1" ]; then
+	second=$x
+	n="0"
+    fi
+    if [ "$n" = "0" ]; then
+	#	DIRECTORY
+	#	GZIPPED
+	MANPAGE="$first"
+	LINK="$DIRECTORY$second"
+	[ $GZIPPED ] && MANPAGE="$MANPAGE.gz"
+        [ -r $LINK ] && [ $BACKUP ] && backup $LINK
+	if [ $MAKEDEP ] ; then 
+	    echo "$PNAME : no dependency generation implemented" 1>&2
+	else
+	    echo -n "$LINK -> $MANPAGE"
+	    if [ ! $SIMULATE ]; then
+		if ln -s -f $MANPAGE $LINK ; then
+		    echo ... OK
+		else
+		    echo "$PNAME: can't create symlink" 1>&2
+		    exit 1
+		fi
+	    else
+		echo " ... simulation"
+	    fi
+	    
+	fi
+    fi
+done
+

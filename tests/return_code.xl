@@ -1,0 +1,7 @@
+#!/usr/bin/env axl
+#
+# File:		tests/return_code.xl
+# Purpose:	test if application exit code from axl is
+#		passed properly to OS
+#
+return 1;

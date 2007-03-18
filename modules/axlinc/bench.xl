@@ -1,0 +1,27 @@
+#!/usr/bin/xparse
+#
+# Copyright:
+#
+#   This program is Copyright(c) Zbigniew Zagorski 1999-2001, 
+#   All rights reserved, and is distributed as free software under the 
+#   license in the file "LICENSE", which is included in the distribution.
+if( ! _bench_included ){
+    _bench_included = 1;
+    with (bench = new ) {
+/** bench.timer()
+  Create paused timer object with methods:
+    resume	- resume counting
+    pause	- pause counting
+    total_time	- return number of seconds (real) counted
+    start_time	- return start time of count
+    finish_time	- return finish time of count
+    done	- destructor
+*/
+	create_timer	= builtin "bench:create_bench";
+	timer 		= bench.create_timer;
+	create_counter	= bench.create_timer;
+    };
+/*
+    global bench;
+*/
+};

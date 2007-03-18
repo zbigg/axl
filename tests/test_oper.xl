@@ -1,0 +1,39 @@
+#!/usr/bin/env axl
+#
+# File:		tests/template.xl
+# Purpose:	template of test
+#		
+#
+
+i = 11;
+j = 22;
+
+f = 2.0;
+g = 3.14;
+
+s = "2.0";
+t = "text";
+
+echo {?\
+Values:
+    i		$i;
+    j		$j;
+    f		$f;
+    g		$g;
+    s		$s;
+    t		$t;
+Test:
+    exp		value		should be
+    i+j		$i+j;		33
+    i+f		$i+f;		13	--  this is float
+    i+g		$i+g;		14.14 	--  when two numbers are added, then return 
+					    value is float if any of
+    					    input arguments is float
+    g+i		$g+i;		14.14
+    i+s		$i+s;		13
+    s+i		$s+i;		2.011
+    g+s		$g+s;		5.14
+    s+g		$s+g;		2.03.14
+    i+t		$i+t;		11
+    t+i		$t+i;		text11
+?};

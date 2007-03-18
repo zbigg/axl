@@ -1,0 +1,22 @@
+<!-- 							-->
+<!--   File:	part2.sgml				-->
+<!--							-->
+<!--   Id:	$Id: part2.sgml 1.3 03/11/22 02:16:41+01:00 zbigg@zbigg.(none) $					-->
+<!--							-->
+<!--   Purpose:  					-->
+<!--        	Part 2 of AXL Documentation 		-->
+<!--							-->
+<!--    	Set of references for Standard AXL	-->
+<!--		Library. 				-->
+<!--							-->
+<part>
+    <title>Standard Library</title>
+    <partintro>
+    <para>
+	This is description of <emphasis>StdAXL</emphasis> library which must be included in
+	every AXL distribution.
+    </para>
+    </partintro>
+    &axl-stdtime;
+    &axl-stdio;
+</part>

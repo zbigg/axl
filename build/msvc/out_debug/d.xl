@@ -1,0 +1,6 @@
+#! /usr/bin/env axl
+{
+	var y=37;
+	var x=func(a,b)->(y+a+b);
+	echo x(1,2);
+};

@@ -1,0 +1,108 @@
+######################################
+#
+# File		: Makefile.in
+# Id            : $Id: Makefile.in 1.2 03/12/05 15:56:08+01:00 zbigg@zbigg.(none) $
+# Author	: Zbigniew Zagorski <zzbigg@o2.pl>
+# Type		: GNU Make
+# Source type	: miscelleaonous
+#
+######################################
+#
+# Options
+#	DEBUG=1		compile with debug information (default)
+#	DEBUG=0		compile without debug information
+#	PROF=1		compile with debug information
+#	PROF=0		compile without debug information (default)
+#	INST_DIR=dir	use dir as instalation directory
+#			(default (/usr/lib).
+#
+# Targets:
+#    default	: Compile dynamic library.
+#    inst	: Install libary to default place (/usr/lib).
+#                 Require root access.
+#    static	: Compile static linked library.
+#    clean	: Remove all intermediate files .
+#    clean_all	: Remove all including libary and depandency files.
+#
+######################################
+
+# Default:  Compile with debugger info
+DEBUG?=1
+# Default:  Don't compile & link with profier code
+PROF?=0
+
+CUR_DIR=$(shell if [ "$$PWD" != "" ]; then echo $$PWD; else pwd; fi)
+
+SUBDIRS=
+
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = ..
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+# use 'DESTDIR' from environment!
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+CC = @CC@
+CPP = @CPP@
+INSTALL = @INSTALL@
+INSTALL_INFO = @INSTALL_INFO@
+
+export DEBUG PROF
+
+all default :
+	echo "This directory contains target for cleaning only !"
+
+doc:
+	$(MAKE) -C doc $@
+
+GENERATRD_FILES=\
+	config.cache config.log config.status config.h\
+	tags Makefile dconfig.h
+
+distclean:
+	-echo -n "" > $(srcdir)/anjuta/.tm_project.cache
+	-rm -f $(top_srcdir)/axl.prj  $(top_srcdir)/.tm_project.cache
+	-rm -f Makefile
+
+clean install :
+
+#
+# Keep Makefile recent
+#
+
+${top_builddir}/config.h: ${top_srcdir}/config.h.in
+	@echo Rebuilding config.h
+	(cd $(top_builddir) ; ./config.status ; )
+
+${top_srcdir}/configure  $(top_builddir)/config.status: ${top_srcdir}/configure.in
+	@echo Rebuilding configure
+	(cd ${top_srcdir}; autoconf ; )
+	(cd ${top_builddir}; ./config.status --recheck ; )
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd $(top_builddir) ; ./config.status ; )
+
+
+
+

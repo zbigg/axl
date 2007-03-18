@@ -1,0 +1,208 @@
+#MAKEFILE
+#
+# Platform     : UNIX
+# Source type  : axl module
+#
+# 	Author Zbigniew Zagorski <zzbigg@o2.pl>
+#
+# Id           : $Id: Makefile.in 1.1 03/10/16 00:03:02+02:00 zbigg@marl.(none) $
+#
+######################################
+#
+# Library:  stagpar
+#
+# Options
+#
+# Targets:
+#    <default>	: Compile library.
+#    install	: Install libary and headers.
+#                 Require root access.
+#    static	: Compile static linked library.
+#    shared	: Compile shared library.
+#    clean	: Remove all intermediate files .
+#    clean_all	: Remove all including libary and depandency files.
+#    dist_clean : Remove all to fit distribution.
+#
+######################################
+
+
+#Sources for library
+MODNAME=stagpar
+SOURCES_C=stagpar.c lextag.c
+
+PROFILE=@PROFILE@
+SHARED=@SHARED@
+SHARED_MODULES=@SHARED_MODULES@
+DEBUG=@DEBUG@
+
+SHARED_EXT=@SHARED_EXT@
+STATIC_EXT=.a
+LIBNAME=@LIBNAME@
+VERSION=@VERSION@
+VERSION_MAJOR=@VERSION_MAJOR@
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = ../..
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+CC=@CC@
+CPP = @CPP@
+LD=@CC@
+AR=ar
+RANLIB=@RANLIB@
+LN_S = @LN_S@
+YACC = @YACC@
+FLEX = @FLEX@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+DLLTOOL=@DLLTOOL@
+mkinstalldirs = $(SHELL) $(top_srcdir)/misc/mkdirs.sh
+
+CINCLUDE=-I$(top_srcdir)/common -I$(top_srcdir)/libxl -I$(top_builddir) -I$(srcdir)
+
+CFLAGS=@DEFS@ @CFLAGS@ $(CINCLUDE)
+
+# Flags for linker needed to build shared library
+LDFLAGS=-shared -L$(top_builddir)/libxl  @MODULES_LIBS@
+
+# Flags for ar needed to build static library
+ARFLAGS=
+
+#Public header files: these files will be copied to INST_DIR_INC when
+#	installing develompent package
+
+
+LIB_OUTPUT_DYN=$(MODNAME).$(SHARED_EXT)
+LIB_OUTPUT_DLL=$(MODNAME).dll
+
+LIB_OUTPUT_ST=lib$(MODNAME).a
+
+SOURCES=$(SOURCES_C) $(SOURCES_CC) $(SOURCES_CPP)
+
+OBJECTS_C=$(SOURCES_C:.c=.o)
+OBJECTS_CC=$(SOURCES_CC:.cc=.o)
+OBJECTS_CPP=$(SOURCES_CPP:.cpp=.o)
+
+OBJECTS=$(OBJECTS_C) $(OBJECTS_CC) $(OBJECTS_CPP)
+
+default: all
+
+ifeq "@CYGWIN@" "yes"
+BUILD_DLL=1
+endif
+
+ifeq "@MINGW32@" "yes"
+BUILD_DLL=1
+endif
+
+ifeq ($(SHARED_MODULES),yes)
+LIB_OUTPUT=$(LIB_OUTPUT_DYN)
+
+all: shared
+inst_lib: inst_lib_shared
+
+else
+
+LIB_OUTPUT=$(LIB_OUTPUT_ST)
+all: static
+inst_lib:
+
+endif
+
+PRODUCTS=$(LIB_OUTPUT)
+
+shared : $(LIB_OUTPUT)
+static  : $(LIB_OUTPUT_ST)
+
+#
+# The main build
+#
+
+$(LIB_OUTPUT_DYN): $(OBJECTS)
+	$(LD) $^ $(LDFLAGS) -o $@
+
+$(LIB_OUTPUT_ST): $(OBJECTS)
+	$(AR) cru $(ARFLAGS) $(CLIB) $@ $^
+	$(RANLIB) $(LIB_OUTPUT_ST)
+
+lextag.c:	lextag.l
+	$(FLEX)	-Plt_ -o$@ $<
+#
+#	Installation
+#
+
+install: inst_dev
+
+inst_lib_shared: $(LIB_OUTPUT_DYN)
+	$(mkinstalldirs) $(pkglibdir)
+	$(INSTALL) $(LIB_OUTPUT_DYN) $(pkglibdir)
+
+inst_dev: inst_lib
+
+inst_inc:
+
+inst_doc : doc
+	@echo Installing documentation
+	@echo WARNING: nothing done
+
+doc:
+	@echo Making documentation
+	@echo Here put your code that creates documentation in doc/
+	@echo WARNING: nothing done
+	@if [ ! -d doc ]; then mkdir doc; fi
+
+#
+# Cleaning
+#
+clean:
+	rm -f $(OBJECTS)
+
+clean_all:
+	rm -f $(OBJECTS) $(PRODUCTS)
+	rm -f *.d *.o core
+	rm -f core *.so *.so.* *.a *.~* *.bak
+
+distclean: clean_all
+	rm -f Makefile
+
+
+#
+# Keep Makefile recent
+#
+
+${top_builddir}/config.h: ${top_srcdir}/config.h.in
+	@echo Rebuilding config.h
+	(cd $(top_builddir) ; ./config.status ; )
+
+${top_srcdir}/configure  $(top_builddir)/config.status: ${top_srcdir}/configure.in
+	@echo Rebuilding configure
+	(cd ${top_srcdir}; autoconf ; )
+	(cd ${top_builddir}; ./config.status --recheck ; )
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd $(top_builddir) ; ./config.status ; )
+
+
+-include $(OBJECTS:.o=.d)
+
+

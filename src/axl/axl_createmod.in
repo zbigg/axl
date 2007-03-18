@@ -1,0 +1,111 @@
+#!/bin/sh
+#
+# File:		axl_createmod.in
+#
+# Id:		$Id: axl_createmod.in 1.3 04/05/22 20:13:21+02:00 zbigg@veinard.dom $
+#
+# Project:	axl
+#
+#####################
+#
+#  Note: axl-createmod is generated from axl-createmod.in
+#
+
+version=@VERSION@
+package=@PACKAGE@
+pname=`basename $0`
+prefix="@prefix@"
+exec_prefix="$prefix"
+libdir="@libdir@"
+pkglibdir="$libdir/@PACKAGE@"
+
+usage()
+{
+   cat <<EOF
+Usage: $pname [ --cflags=cflags ] [ --ldflags=ldflags] module_name
+EOF
+   exit $1
+}
+
+out_dir="."
+cflags=""
+ldflags=""
+while test $# -gt 1; do
+   case "$1" in
+   -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+   *) optarg= ;;
+   esac
+
+   case $1 in
+
+      --cflags=*)
+	 cflags=$optarg
+      ;;
+
+      --ldflags=*)
+	 ldflags=$optarg
+      ;;
+
+      --dir=*)
+         out_dir=$optarg
+      ;;
+      --version)
+	 echo $version
+      ;;
+
+      *)
+	 usage 1 1>&2
+      ;;
+
+   esac
+   shift
+done
+
+if test $# -lt 1 ; then
+    echo "$pname: module_name required" 1>&2
+    usage 1 1>&2
+else
+    name=$1
+fi
+[ -f $out_dir/Makefile.in ] && { 
+    echo "$pname: trying to owerwrite existing sources" 1>&2 
+    read -p "Owerwrite existing sources (type yes to confirm)? ";
+    case "$REPLY" in
+	yes|Yes|YES|YEs|yeS|yES|YeS|yEs)
+	    ;;
+	*)
+	     exit 1 ; 
+	;;
+    esac
+}
+
+echo "$pname: creating $PACKAGE module '$name'"
+[ ! -d $out_dir ] && mkdir -p $out_dir 
+[ ! -d $out_dir ] && { echo "$pname: couldn't create $out_dir" 1>&2 ; exit 1 ; }
+
+skel_dir="$pkglibdir/skel"
+[ ! -d $skel_dir ] && { echo "$pname: skeleton directory $skel_dir doesn't exist" 1>&2 ; exit 1 ; }
+
+MOD_SOURCE="$name.c"
+MOD_XLINCLUDE="$name.xl"
+MOD_OBJECTS="$name.o"
+MOD_VERSION="1.0.0"
+SCRIPT="s/@MOD_NAME@/$name/;\
+s/@MOD_SOURCES@/$MOD_SOURCE/;\
+s/@MOD_INCLUDES@/$MOD_XLINCLUDE/;\
+s/@MOD_OBJECTS@/$MOD_OBJECTS/;\
+s/@MOD_VERSION@/$MOD_VERSION/;\
+s/@MOD_CFLAGS@/$cflags/;
+s/@MOD_NAME@/$name/;\
+s/@MOD_NAME@/$name/;\
+s/@MOD_NAME@/$name/;\
+s/@MOD_LDFLAGS@/$ldflags/;"
+
+echo creating $out_dir/Makefile.in
+sed "$SCRIPT" $skel_dir/Makefile.in > $out_dir/Makefile.in
+echo creating $out_dir/$MOD_SOURCE
+sed "$SCRIPT" $skel_dir/mod.c > $out_dir/$MOD_SOURCE
+echo creating $out_dir/$MOD_XLINCLUDE
+sed "$SCRIPT" $skel_dir/mod.xl > $out_dir/$MOD_XLINCLUDE
+
+exit 0

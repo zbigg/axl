@@ -1,0 +1,35 @@
+#!/usr/bin/xparse
+#
+# File:		cgi.xl
+#
+# Id:		$Id: cgi.xl 1.2 03/11/27 22:34:06+01:00 zbigg@zbigg.(none) $
+#
+# Copyright:
+#
+#   This program is Copyright(c) Zbigniew Zagorski 1999-2001, 
+#   All rights reserved, and is distributed as free software under the 
+#   license in the file "LICENSE", which is included in the distribution.
+if( ! _cgi_included ){
+    _cgi_included = 1;
+    with( cgi = new ) {
+	param = builtin "cgi:cgi_get_option";
+	header_html = func() {
+	    return "Content-type: text/html\r\n\r\n"; 
+	};
+	content_type = func(type,charset) {
+	    a = "Content-type: " + type;
+	    if( charset )
+		a = a + "; charset=" + charset;
+	    a += "\r\n";
+	    return a;
+	};
+	finish_header = func() {
+	    return "\r\n"; 
+	};
+	set_output_conv = builtin "cgi:cgi_set_output_conv";	
+	    ISO2PLAIN	= 1;
+	    WIN2PLAIN	= 2;
+	    WIN2ISO	= 3;
+	    ISO2WIN	= 4;
+    };
+};

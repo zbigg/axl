@@ -1,0 +1,118 @@
+#!/usr/bin/env axl
+#
+# File:		tests/template.xl
+# Purpose:	template of test
+#		
+#
+
+include "postgres.xl";
+include "stdio";
+
+show_array = func(a, prefix="") {
+    var c = a.count;
+    echo prefix," a->count    = ",c,"\n";
+    echo prefix," a->capacity = ",a.capacity,"\n";
+    for(var i = 0; i < c; i+=1 ) {
+	echo prefix, " elem[",i,"] = ",a[i],"\n";
+    };
+};
+
+var a1 = new array;
+a2 = copy a1;
+a1.append(1,32);
+show_array(a1,"after append");
+show_array(a2);
+
+axl.io.puts("io. hello\n");
+axl.io.open("/dev/null");
+
+# lex test !
+# comments !
+2/2; # this is almost comment !
+// hello
+/*
+    hello
+*/
+# hello
+/* * ** * / */
+
+# numeric tests
+i = 0xb + 0Xbb + 002;
+j = 11#20;
+f = 0.23e43;
+f = .32;
+f = 32e32;
+f = 44;
+#
+# string test !
+#
+t = "text";
+ss = "\n\a\b\t\v\r\n\004\x32";
+
+#
+# character constant test
+#
+t = 'g';
+k = '\n';
+f = 2.0;
+g = 3.14;
+
+#
+# keywords 
+#
+if( 2 > 1 ) {
+    while (0 )  2 ; # ;
+} else {
+} ;
+#
+# inline text 
+#
+echo {? ? $k; %l; } ?};
+echo {?\
+Values:
+    i		$i;
+    j		$j;
+    f		$f;
+    g		$g;
+    s		$s;
+    t		$t;
+Test:
+    exp		value		should be
+    i+j		$i+j;		33
+    i+f		$i+f;		13	--  this is float
+    i+g		$i+g;		14.14 	--  when two numbers are added, then return 
+					    value is float if any of
+    					    input arguments is float
+    g+i		$g+i;		14.14
+    i+s		$i+s;		13
+    s+i		$s+i;		2.011
+    g+s		$g+s;		5.14
+    s+g		$s+g;		2.03.14
+    i+t		$i+t;		11
+    t+i		$t+i;		text11
+?};
+
+#
+#
+# processor
+
+x = 3;
+var u = 32;
+t = "hello";
+echo t[3];
+#t[2] = 'h';
+echo t;
+switch( u ) {
+> 2 -> z = 2;
+== 1 -> z = 1;
+};
+
+x = new;
+with( x ) {
+    szafa = 3;
+};
+i=0;
+do {
+    i = i+1;
+} while( i < 10 || 2 && 0);
+#delete x.szafa;

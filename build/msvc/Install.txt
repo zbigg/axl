@@ -1,0 +1,14 @@
+Making target InstallBin by default installs all programs into \Axl.
+
+If you want to change it then edit "InstallBin.mak" and change that 
+DESTDIR variable assignment.
+
+Files that gets installed for now:
+	DESTDIR\axl.exe
+	DESTDIR\xl.dll | xld.dll
+	DESTDIR\modules\stdaxl.dll
+	DESTDIR\modules\cgi.dll
+	DESTDIR\include\axl\	<-	include files from "include" 
+					directory in source root
+
+

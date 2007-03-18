@@ -1,0 +1,626 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>AXL - dokumentacja</TITLE>
+<META content="text/html; charset=windows-1250" http-equiv=Content-Type>
+<META content="Zbigniew Zagórski, Strona domowa" name=Keywords>
+<META content="Zbigniew Zagórski" name=author></HEAD>
+<BODY><BR>
+<DIV class=tekst>
+<H1>AXL - dokumentacja</H1>
+<P>Data modyfikacji : 10-03-2003<BR>Wersja: 0.1-9<BR>
+<H2>Zawartość</H2><A name=toc>
+<UL>
+  <LI><A href="#chapter_1">1. 
+  Wprowadzenie</A> 
+  <LI><A href="#chapter_2">2. Składnia</A> 
+  <UL>
+    <LI><A href="#sect_2_1">2.1 Program</A> 
+    <LI><A href="#sect_2_2">2.2 
+    Instrukcja</A> 
+    <LI><A href="#sect_2_3">2.3 Instrukcja 
+    specjalna</A> 
+    <LI><A href="#sect_2_4">2.4 
+    Wyrażenie</A> 
+    <LI><A href="#sect_2_5">2.5 Konwencje 
+    leksykalne</A> </LI></UL>
+  <LI><A href="#chapter_3">3. Działanie 
+  programu</A> 
+  <UL>
+    <LI></LI></UL>
+  <LI><A href="#chapter_4">4. Biblioteka 
+  standardowa</A> 
+  <UL>
+    <LI><A href="#sect_4_1">4.1 IO</A> 
+    <LI><A href="#sect_4_2">4.2 SYSTEM</A> 
+    </LI></UL>
+  <LI><A href="#chapter_5">5. Przykłady</A> 
+  </LI></UL></DIV>
+<H1><A name=chapter_1>1.</A> Wprowadzenie</H1>
+<DIV class=tekst>
+<H3><A name=sect_1_1>1.1</A> Pierwotne założenia, historia itp</H3>
+<P>Biblioteka AXL na początku projektowana była w celu ułatwienia tworzenia 
+dynamicznie generowanych stron internetowych. Oczywiście pomysł nie był nowy. 
+Istniały już min. SSI, PHP czy nawet Perl (w tym przypadku trudno mówić o 
+ułatwieniu). Pierwotnym więc wymaganiem wobec parsera było formatowanie 
+dokumentu na podstawie wzorca, np: <PRE>        &lt;TITLE&gt;<I>$<B>document.title</B>;</I>&lt;/TITLE&gt;
+czy
+        &lt;A HREF="<I>$<B>link.address</B>;</I>"&gt; <I>$<B>link.description</B>;</I> &lt;/A&gt;
+</PRE>
+<P>Więc pierwszą rzeczą jaką zimplementowałem to parser dokumentu który każdą 
+sekwencję <CODE><B>$</B> <I>expr</I> <B>;</B></CODE> zamienia na wartość tegoż 
+wyrażenia. Dodatkowo <CODE><B>%</B> instr <B>;</B></CODE> wykonuje zadana 
+instrukcje bez wypisywania żadnej wartości. 
+<P>Następnym krokiem było zbudowanie porządnego parsera za pomocą Yacc'a, 
+poprzedni był pisany ręcznie i nie posiadał nawet operatorów. Teraz język nabrał 
+wyraźnych kształtów. Więc składnia instrukcji, wyrażeń i znaczenie operatorów 
+jest wzorowana na języku C. Różnica polega na deklarowniu i użyciu zmiennych, 
+funkcji i obiektów i fakcie, że skrypt (program) uruchamiany jest sekwencyjnie, 
+czyli od pierwszej linijki do ostatniej. 
+<P>
+<p>
+<H1><A name=chapter_2>2.</A> Składnia</H1>
+<DIV class=tekst>
+<P>Ten rozdział zawiera dokładny opis składni języka. Oczywiście na razie 
+niekompletny. 
+<H2><A name=sect_2_1>2.1</A> Program</H2>
+<P>Program składa się z ciągu instrukcji zakończonych jednym średnikiem 
+wykonywanych w sposób sekwencyjny. 
+<P>Składnia: <PRE><I>program</I> : /* empty */
+        | <I>program instrukcja</I> <B>;</B>
+        | <I>program</I> <B>include</B> <I>TEXT</I> <B>;</B>
+        ;
+</PRE>
+<UL>
+  <LI><A name=desc_program>2.1.1</A> <B>program</B><BR>
+  <LI><A name=desc_include>2.1.2</A> <B>include</B><BR>Instrukcja 
+  <CODE><B>include "</B>nazwa<B>"</B></CODE> włącza plik o zadanej nazwie zaraz 
+  za średnikiem.<BR>Instrukcja włączająca tekst pliku może znajdować się tylko w 
+  kontekscie globalnym lub w bloku. Nie może się znajdować w instrukcji <A 
+  href="#desc_if">if</A>, <A 
+  href="#desc_if_else">if/else</A>, <A 
+  href="#desc_do_while">do/while</A>, <A 
+  href="http://192.168.1.2/~trurl/desc_do_if">do/if</A> jako pojedycza 
+  instrukcja. </LI></UL>
+<H2><A name=sect_2_2>2.2</A> Instrukcja</H2>
+<P>Instrukcja może być wyrażeniem, blokiem instrukcji lub instrukcją specjalną. 
+<P>Składnia: <PRE><I>instrukcja</I>
+        : <I>wyrazenie</I>
+        | <I>blok</I>
+        | <I>instrukcja_specjalna</I>
+        ;
+<I>instrukcje</I>
+        : /* empty */
+        | <I>instrukcje</I> <I>instrukcja</I> <B>;</B>
+        | <I>instrukcje</I> <B>include</B> <I>TEXT</I> <B>;</B>
+        ;
+<I>blok</I>
+        : <B>{</B> <I>instrukcje</I> <B>}</B>
+        ;
+</PRE>
+<UL>
+  <LI><A href="#desc_include">include</A> 
+  <LI><A href="#desc_text">TEXT</A> 
+  <LI><A name=desc_instrukcja>2.2.1</A> <B>instrukcja</B><BR>
+  <LI><A name=desc_blok>2.2.2</A> <B>blok</B><BR></LI></UL>
+<H2><A name=sect_2_3>2.3</A> Instrukcja specjalna</H2>
+<P>Instrukcja specjalna to jedna z: <A 
+href="#desc_if">if</A>, <A 
+href="#desc_if_else">if/else</A>, <A 
+href="#desc_while">while</A>, <A 
+href="#desc_do_while">do/while</A>, <A 
+href="#desc_switch">switch</A>; 
+<P>Składnia:<PRE><I>instrukcja_specjalna</I>
+        : <B>if (</B> <I>wyrazenie</I> <B>)</B> <I>instrukcja</I>
+        | <B>if (</B> <I>wyrazenie</I> <B>)</B> <I>instrukcja</I> <B>else</B> <I>instrukcja</I>
+        | <B>for (</B> <I>wyrazenie</I> <B>;</B> <I>wyrazenie</I> <B>;</B> <I>wyrazenie</I> <B>)</B> <I>wyrazenie</I>
+        | <B>while (</B> <I>wyrazenie</I> <B>)</B> <I>instrukcja</I> 
+        | <B>do</B> <I>instrukcja</I> <B>while (</B> <I>wyrazenie</I> <B>)</B>
+        | <B>return</B> <I>wyrazenie</I>
+        | <B>echo</B> <I>lista_wyrazen_niepusta</I>
+        | <B>switch (</B> wyrazenie <B>) {</B> <I>przypadek</I> <B>}</B>
+        | <B>global</B> <I>wyrazenie</I>
+        ;
+<I>przypadek</I>    
+        : /* empty */
+        | wyrazenie_case <B>-&gt;</B> instrukcja <B>;</B> przypadek
+        | <B>default</B> <B>-&gt;</B> instrukcja <B>;</B>
+        ;
+<I>wyrazenie_case</I>
+        : <I>wyrazenie</I> 
+        | <I>CMP_OPER wyrazenie</I>
+        ;
+</PRE>
+<UL>
+  <LI><A href="#desc_cmp_oper">CMP_OPER</A> 
+  <LI><A name=desc_if>2.3.1</A> <B>if</B><BR><CODE><B>if (</B> <I>warunek</I> 
+  <B>)</B> <I>instT</I></CODE><BR>Instrukcja warunkowa <B>if</B> jest wykonywana 
+  w następujący sposób: 
+  <UL>
+    <LI>opracowane jest wyrazenie <I>warunek</I> i sprawdzone czy jego wartośc 
+    jest rożną od zera 
+    <LI>w przypadku twierdzącym wykonuje się instrukcję <I>instT</I> </LI></UL>
+  <LI><A name=desc_if_else>2.3.2</A> <B>if/else</B><BR><CODE><B>if (</B> 
+  <I>warunek</I> <B>)</B> <I>instT</I> <B>else</B> 
+  <I>instF</I></CODE><BR>Instrukcja warunkowa <B>if/else</B> jest wykonywana w 
+  następujący sposób: 
+  <UL>
+    <LI>opracowane jest wyrazenie <I>warunek</I> i sprawdzone czy jego wartośc 
+    jest rożną od zera 
+    <LI>w przypadku twierdzącym wykonuje się instrukcję <I>instT</I> 
+    <LI>w przypadku przeczącym wykonuje się instrukcję <I>instF</I> </LI></UL>
+  <LI><A name=desc_for>2.3.3</A> <B>for</B><BR><CODE><B>for (</B> <I>wyrS</I> 
+  <B>;</B> <I>warunek</I> <B>;</B> <I>wyrI</I> <B>)</B> 
+  <I>instP</I></CODE><BR>Instrukcja iteracyjna <B>for</B> wykonywana jest w 
+  następujący sposób: 
+  <UL>
+    <LI>1. wykonywana jest inetukcja <I>wyrS</I> 
+    <LI>2. opracowuje się wyrażenie <I>warunek</I> i sprawdza się czy jest różne 
+    od zera 
+    <LI>3. w przypadku przeczącym nasępuje wyskoczenie z pętli 
+    <LI>4. w przypadku twierdzącym wykonywana jest instrukcja <I>instP</I>, 
+    opracowuje się wyrażenie <I>wyrI</I> a następnie wykonywany jest skok do 
+    punktu 2 </LI></UL>Instrukcja <CODE>for( a ; b ; c ) d</CODE> jest równoważna 
+  instrukcji<PRE>{
+        a;
+        while( b ) {
+                d;
+                c;
+        };
+}
+</PRE>
+  <LI><A name=desc_while>2.3.4</A> <B>while</B><BR><CODE><B>while (</B> 
+  <I>warunek</I> <B>)</B> <I>instP</I> </CODE><BR>Instrukcja iteracyjna 
+  <B>while</B> wykonywana jest w następujący sposób: 
+  <UL>
+    <LI>1. opracowuje się wyrażenie <I>warunek</I> i sprawdza się czy jest różne 
+    od zera 
+    <LI>2. w przypadku przeczącym nasępuje wyskoczenie z pętli 
+    <LI>3. w przypadku twierdzącym wykonywana jest instrukcja <I>instP</I>, 
+    opracowuje się wyrażenie a następnie wykonywany jest skok do punktu 1 
+  </LI></UL>
+  <LI><A name=desc_do_while>2.3.5</A> <B>do_while</B><BR><CODE><B>do</B> 
+  <I>instP</I> <B>while (</B> <I>warunek</I> <B>)</B></CODE><BR>Instrukcja 
+  iteracyjna <B>do/while</B> wykonywana jest w następujący sposób: 
+  <UL>
+    <LI>1. wykonuje się instrukcję <I>instP</I> 
+    <LI>2. opracowuje się wyrażenie <I>warunek</I> i sprawdza się czy jest różne 
+    od zera 
+    <LI>3. w przypadku przeczącym nasępuje wyskoczenie z pętli 
+    <LI>4. w przypadku twierdzącym wykonywany jest skok do punktu 1 </LI></UL>
+  <LI><A name=desc_return>2.3.6</A> <B>return</B><BR><CODE><B>return</B> 
+  <I>wartZ</I></CODE><BR>Instrukcja <B>return</B> powoduje powrót z funkcji lub 
+  metody wraz ze zwróceniem wartości <I>wartZ</I>. <BR>Instrukcja <B>return</B> 
+  może wystąpić tylko i wyłącznie w ciele funkcji. <BR>Jeżeli w ciele funkcji 
+  nie występuje instrukcja return lub następuje powrót z funkcji spowodowany 
+  zakończeniem jej kodu zwracana jest wartość <I>NIL</I>. <BR>Zwracanie z 
+  funkcji następuje przez wartość. Nie można zwaracać przez referencje zmiennych 
+  prostych, jedynie obiekty. 
+  <LI><A name=desc_echo>2.3.7</A> <B>echo</B><BR><CODE><B>echo</B> 
+  <I>listaW</I></CODE><BR>Instrukcja <B>echo</B> powoduje opracowanie każdego z 
+  wyrażeń w liscie <I>listaW</I> w kolejności od lewej do prawej, a następnie 
+  wypisanie ich tekstowej reprezentacji na standardowe wyjście.<BR>
+  <LI><A name=desc_switch>2.3.8</A> <B>switch</B><BR><CODE><B>switch (</B> wyrW 
+  <B>) {</B> <I>przypW</I> <B>}</B></CODE><BR><I>przypadek</I>: <I>wyrazenie</I> 
+  <B>-&gt;</B> <I>instP</I> <B>;</B><BR><I>przypadek</I>: <I>CMP_OPER 
+  wyrazenie</I> <B>-&gt;</B> <I>instP</I> <B>;</B><BR>Instrukcja <B>switch</B> 
+  wykonywana jest w następujący sposób: 
+  <UL>
+    <LI>opracowywane jest wyrażenie <I>wyrW</I> i umieszczane w zmiennej 
+    <B>case</B> 
+    <LI><I>brak inwencji autora, patrz przykład</I> </LI></UL>Przykład: instrukcja 
+<PRE><B>switch</B>( e ) {
+        <B>==</B> 0 -&gt; inst0 <B>;</B>
+        <B>case</B> <B>==</B> 2 <B>||</B> <B>case</B> <B>==</B> 3 <B>-&gt;</B> inst1 <B>;</B>
+        war2 -&gt; inst2 <B>;</B>
+        war3 -&gt; inst3 <B>;</B>
+        war4 -&gt; inst4 <B>;</B>
+        /* ... */
+        warn -&gt; instn <B>;</B>
+        <B>default</B> -&gt; instD <B>;</B>    
+}
+</PRE>jest równoważna: <PRE><I>my_case</I> = e;
+        <B>if</B>( <I>my_case</I> <B>==</B> 0 ) <I>inst0</I>
+<B>else if</B>( <I>my_case</I> == 2 || <I>my_case</I> == 3 ) <I>inst1</I>
+<B>else if</B>( <I>war3</I> ) <I>inst2</I> 
+<B>else if</B>( <I>war4</I> ) <I>inst2</I> 
+/* ... */
+<B>else if</B>( <I>warn</I> ) <I>instn</I>
+<B>else</B> <I>instD</I>
+</PRE>
+  <LI><A name=desc_global_i>2.3.9</A> <B>global</B><BR><CODE><B>global</B> 
+  <I>ob0</I></CODE><BR>Instruckja <B>global</B> powoduje utworzenie kontekstu 
+  bezpośrednio pod kontekstem globalnym z identyfikatorami tożsamymi z polami 
+  obiektu <I>ob0</I><BR>Przykład: <PRE>obj = <B>new</B>;
+<B>global</B> obj;
+obj.member = <I>"abc"</I>;
+member <I>jest tym samym obiektem co</I> obj.member
+</PRE></LI></UL>
+<H2><A name=sect_2_4>2.4</A> Wyrażenie</H2>
+<P>Wyrażenie przedstawia konkretną wartość. Wartość może być natychmiastowa 
+"<I>ival</I>" lub referencyjna "<I>rval</I>". <I>Rval</I> to taka która wskazuje 
+na zmienną i która może być zmieniona, <I>ival</I> nie może być zmieniona. 
+<P>Wyrażenie składa się z wartości połączonych różnymi operatorami. Każdy 
+operator wykonuje pewne operacje na swoich argumentach i zwraca w wyniku inną 
+lub tą samą wartość. 
+<H3><A name=desc_expr_ival>2.4.1</A> Wartości natychmiastowe <I>ival</I></H3>
+<P>
+<H3><A name=desc_expr_rval>2.4.2</A> Wartości referencyjme <I>rval</I></H3>
+<P>
+<H3><A name=desc_expr_oper_arith>2.4.3</A> Operatory arytmetyczne</H3>
+<P><PRE>        + - * / %
+</PRE>
+<UL>
+  <LI>SUMA:<BR><CODE>ival_L <B>+</B> ival_R</CODE> <BR>Sumuje się wartości 
+  ival_L i ival_R zwracając wynik. 
+  <LI>RÓŻNICA:<BR><CODE>ival_L <B>-</B> ival_R</CODE> <BR>Odejmuje się wartości 
+  ival_L i ival_R zwracając wynik. 
+  <LI>ZMIANA ZNAKU:<BR><CODE><B>-</B> ival</CODE> <BR>Zwracana jest wartość ival 
+  ze zmienionym znakiem. 
+  <LI>ILOCZYN:<BR><CODE>ival_L <B>*</B> ival_R</CODE> <BR>Mnoży się wartości 
+  ival_L i ival_R zwracając wynik. 
+  <LI>ILORAZ:<BR><CODE>ival_L <B>/</B> ival_R</CODE> <BR>Dzieli się ival_L przez 
+  ival_R zwracając wynik. 
+  <LI>MODULO: <CODE>ival_L <B>%</B> ival_R</CODE> <BR>Zwraca się resztę 
+  dzielenia ival_L przez ival_R 
+  <LI>Wszystkie operatory arytmetyczne mają lewe wiązanie czyli: <CODE>a + b + c 
+  </CODE>jest rownoważne: <CODE>( a + b ) + c </CODE>. 
+  <LI>Sumowanie lub konkatenacja wartośći opisana jest w rozdziale nt. działania 
+  programu, pp. <A href="#run_summ">suma i 
+  konkatenacja</A>. 
+  <LI>Operatory różnicy,zmiany znaku, mnożenia, dzielenia. Dokonywane są na 
+  wystarczającym do wykonania operacji zbiorze liczbowym całkowitym lub 
+  zmiennoprzecinkowym. Patrz działanie programu <A 
+  href="#run_arith">operacje 
+  arytmetyczne</A>. </LI></UL>
+<H3><A name=desc_expr_oper_logic>2.4.4</A> Operatory logiczne</H3>
+<P><PRE>        &amp; | ^ ~ &amp;&amp; || ^^ !
+</PRE>
+<UL>
+  <LI>ILOCZYN BITOWY:<BR><CODE>ival_L <B>&amp;</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>SUMA BITOWA:<BR><CODE>ival_L <B>|</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>WYŁĄCZNA SUMA BITOWA:<BR><CODE>ival_L <B>^</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>NEGACJA BITOWA:<BR><CODE><B>~</B> ival</CODE> <BR>&nbsp; 
+  <LI>ILOCZYN LOGICZNY:<BR><CODE>ival_L <B>&amp;&amp;</B> ival_R</CODE> 
+  <BR>&nbsp; 
+  <LI>SUMA LOGICZNA:<BR><CODE>ival_L <B>||</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>WYŁĄCZNA SUMA LOGICZNA:<BR><CODE>ival_L <B>^^</B> ival_R</CODE> <BR>&nbsp; 
+
+  <LI>NEGACJA LOGICZNA:<BR><CODE><B>!</B> ival</CODE> <BR>&nbsp; 
+  <LI>Operatory sumy logicznej i iloczynu logicznego mają lewe wiązanie czyli: 
+  <CODE>a &amp; b &amp;c</CODE> jest równoważne: <CODE>( a &amp; b ) &amp; c 
+  </CODE>. Wszystkie inne operatory logiczne i binarne mają lewe wiązanie czyli: 
+  <CODE>a | b | c </CODE>jest rownoważne: <CODE>( a | b ) | c </CODE>. 
+  <LI>Operatory bitowe działają na liczbach całkowitych. Przed obliczniem 
+  dokonywana jest stosowna konwersja do liczby całkowitej. 
+  <LI>Operarory logiczne działają na wartościach logicznych. Patrz <A 
+  href="#run_bool">konwersja do wartości 
+  logicznych</A>. 
+  <LI>Operatory sumy logicznej i iloczynu logicznego obliczają <U>tylko i 
+  wyłącznie</U> tyle wyrażeń wejściowych ile jest potrzebnych do ustalenia 
+  wyniku.<BR>Przykład <PRE>        2 || f()        // wyrazenie f() nie jest obliczane, funkcja
+                        // f. nie jest wywolana
+        0 &amp;&amp; f()        // wyrazenie f() nie jest obliczane, funkcja
+                        // f. nie jest wywolana
+        if( f() ) if( g() ) { ... } // jest równoważna instrukcji :
+	if( f() &amp;&amp; g() ) { ... }
+</PRE></LI></UL>
+<P>
+<H3><A name=desc_cmp_oper><A name=desc_expr_oper_comp>2.4.5</A> Operatory 
+porównania</A></H3>
+<P><PRE>        == != &lt; &gt; &lt;= &gt;=
+</PRE>
+<UL>
+  <LI>RÓWNOŚĆ:<BR><CODE>ival_L <B>==</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>RÓŻNE:<BR><CODE>ival_L <B>!=</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>MNIEJSZE:<BR><CODE>ival_L <B>&lt;</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>WIĘKSZE:<BR><CODE>ival_L <B>&gt;</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>MNIEJSZE RÓWNE:<BR><CODE>ival_L <B>&lt;=</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>WIĘKSZE RÓWNE:<BR><CODE>ival_L <B>&gt;=</B> ival_R</CODE> <BR>&nbsp; 
+  <LI>Wszystkie operatory porónania zwracają wartość logiczną 0 - fałsz lub 1 - 
+  prawda. 
+  <LI>Wszystkie operatory porównania lewe wiązanie czyli: <CODE>a &gt; b &gt; c 
+  </CODE>jest rownoważne: <CODE>( a &gt; b ) &gt; c </CODE>. </LI></UL>
+<H3><A name=desc_expr_oper_set>2.4.6</A> Operatory przypisania</H3>
+<P><PRE>        = += -= *= /= |= &amp;= ?= &lt;&gt;
+</PRE>
+<UL>
+  <LI>PRZYPISANIE:<BR><CODE>rval_R <B>=</B> ival_E</CODE> <BR>Przypisz 
+  <I>ival_E</I> do <I>rval_R</I>. 
+  <LI>DODAJ DO:<BR><CODE>rval_R <B>+=</B> ival_E</CODE> <BR>&nbsp; 
+  <LI>ODEJMIJ OD:<BR><CODE>rval_R <B>-=</B> ival_E</CODE> <BR>&nbsp; 
+  <LI>POMNÓŻ PRZEZ:<BR><CODE>rval_R <B>*=</B> ival_E</CODE> <BR>&nbsp; 
+  <LI>PODZIEL PRZEZ:<BR><CODE>rval_R <B>/=</B> ival_E</CODE> <BR>&nbsp; 
+  <LI>DODAJ DO LOGICZNIE:<BR><CODE>rval_R <B>|=</B> ival_E</CODE> <BR>&nbsp; 
+  <LI>POMNÓŻ PRZEZ LOGICZNIE:<BR><CODE>rval_R <B>&amp;=</B> ival_E</CODE> 
+  <BR>&nbsp; 
+  <LI>PRZYPSANIE JEŚLI NIL:<BR><CODE>rval_R <B>?=</B> ival_E</CODE> <BR>&nbsp; 
+  <LI>Wszystkie operatory przypisania zwracają referencję na zmienną docelową. 
+  <LI>Wszystkie operatory przypisania mają prawe wiązanie czyli: <CODE>a = b = c 
+  </CODE>jest rownoważne: <CODE>a = ( b = c ) </CODE>. </LI></UL>
+<P>
+<H3><A name=desc_expr_oper_select>2.4.7</A> Operatory wyboru</H3>
+<P><PRE>        . []
+</PRE>
+<P>
+<H3><A name=desc_expr_oper_spec>2.4.8</A> Operatory specjalne</H3>
+<P><PRE>        ?: new copy delete ewhile efor eswitch
+<P></P></PRE>
+<H3><A name=desc_expr_func_call>2.4.8</A> Wywoływanie funkcji</H3>
+<P>
+<P>Składnia: <PRE><I>wywolanie</I>
+        : rval_f <B>(</B> <I>parametry</I> <B>)</B> 
+        ;
+<I>parametry</I>
+        : /* empty */
+        | <I>parametry</I> <B>,</B> <I>parametr</I>
+	| <I>parametr</I> 
+        ;
+<I>parametr</I>
+        :         <I>wyrazenie</I>
+        | <B>&amp;</B><I>wyrazenie</I>
+        ;
+</PRE>
+<P>Wywołanie funkcji określonej przez <I>rval_f</I> z parameterami P. Wyrażenia 
+opracowane są opracowane w kolejności od lewej do prawej. Ilość parametrów może 
+być równa 0. <BR>Jeżeli parametrem wyrażenia jest referencja - czyli jakakolwiek 
+zmienna; do funkcji przekazywana jest jedynie wartość. Aby przekazać do funkcji 
+zmienną i móc zmieniać jej zawartość w ciele funkcji; stosujemy przekazywanie 
+parametry przez referencje poprzedzając go znakiem <B>&amp; </B>
+<DIV class=tekst><A 
+href="#toc">Zawartość</A> </DIV>
+
+
+
+<H2><A name=sect_2_5>2.5</A> Konwencje leksykalne</H2>
+
+
+<H3><A name=desc_comment>2.5.1</A> Komentarze</H3>
+<UL>
+  <LI>tekst za znakiem <B>#</B> (hash) lub za sekwencją <B>//</B> pomijany jest 
+  do końca aktualnej linii 
+  <LI>cały tekst pomiędzy sekwencjami <B>/*</B> i <B>*/</B> jest pomijany 
+</LI></UL>
+<H3><A name=desc_number>2.5.2</A> Stałe liczbowe</H3>
+<P>Stałą liczbową jest ciąg cyfr i znaków alfanumerycznych ewentualnie 
+poprzedzony wielkością bazy syetemu liczbowego: Składnia: <PRE><I>stala_liczbowa</I>
+        : <I>liczba_calkowita</I>
+        | <I>liczba_calkowika</I> <B>#</B> <I>liczba_alfanumeryczna</I>
+        | <B>0X</B> <I>liczba_alfanumeryczna</I>
+        | <B>0x</B> <I>liczba_alfanumeryczna</I>
+        | <I>liczba_rzeczywista</I>
+        ;
+<I>liczba_calkowita</I>
+        : <I>CYFRA</I>
+        | <I>liczba_calkowita</I> <I>CYFRA</I>
+        ;
+<I>liczba_alfanumeryczna</I>:
+        : <I>LITERA</I>
+        | <I>CYFRA</I>
+        | <I>liczba_alfanumeryczna</I> <I>LITERA</I>
+        | <I>liczba_alfanumeryczna</I> <I>CYFRA</I>
+        ;
+<I>liczba_rzeczywista</I>
+        : <B>.</B> <I>liczba_calkowita</I>
+        | <I>liczba_calkowita</I> <B>.</B> <I>liczba_calkowita</I>
+        | <I>liczba_calkowita</I> <B>.</B> <I>liczba_calkowita</I> <B>e</B> liczba_calkowita
+        | <I>liczba_calkowita</I> <B>.</B> <I>liczba_calkowita</I> <B>e-</B> liczba_calkowita
+        ;
+</PRE>
+<UL>
+  <LI>dla zadanej bazy wielkości B poprawnymi cyframi są:<BR>B &lt; 11 : 
+  0..B-1<BR>B &gt;= 11 : 0..9 , B - 10 liter począwszy od A<BR>np: dla systemu 
+  trójkowego: 0..2<BR>dla systemu dwunastkowego: 0..9, A, B<BR>dla systemu 
+  dwudziestkowego 0..9, A..J<BR>
+  <LI>w stałych liczbowych wielkość liter nie jest rozróżniana 
+  <LI>przykłady stałych reprezentujących liczby całkowite <PRE>23              // liczba 23 w systemie dziesiętnym
+0xff            // liczba ff w systemie szesnastkowym, 
+                // 255 dziesiętnie
+2#0010101       // liczba 10101 w systemie dwójkowym, 
+                // 37 dziesiętnie
+20#AFH          // liczba AFH w systemie dwudziestkowym:
+                // 10*20<SUP>2</SUP> +15*20<SUP>1</SUP> + 17*20<SUP>0</SUP>
+                // = 4000 + 300 + 17 = 4317
+3#203           // niepoprawna stała znakowa w systemie
+                // trójkowym
+</PRE>
+  <LI>przykłady stałych reprezentujących liczby rzeczywiste <PRE>.1              // jedna dziesiąta: 0.1
+3.15            // 3 i 15 setnych
+50e-1           // 50 * 10<SUP>-1</SUP> = 50 * 0.1 = 5
+2.6e2           // 2.6 * 10<SUP>2</SUP> = 2.6 * 100 = 260
+</PRE></LI></UL>
+<H3><A name=desc_char>2.5.3</A> Stałe znakowe</H3>
+<P>Stałą znakową jest znak alfanumeryczny lub specjajny wewnątrz apostrofów, np: 
+<B>'a'</B> , <B>'A'</B>, <B>'\n'</B> , <B>'\xa0'</B><BR>
+<P>Składnia:<PRE><I>stała_znakowa</I>
+        : <B>'</B> ZNAK <B>'</B>
+        ;
+<A name=desc_char></A><I>ZNAK</I>
+        : znak_alfanumeryczny
+        | <B>\</B> znak_spec
+        | <B>\x</B> liczba_szestnastkowa
+        | <B>\0</B> liczba_osemkowa_3
+        ;
+</PRE>
+<UL>
+  <LI><A name=desc_alfa_char>2.5.3.1</A> znak_alfanumeryczny: każdy znak 
+  widoczny na ekranie 
+  <LI><A name=desc_char_hex>2.5.3.2</A> <B>liczba_szestanstkowa</B><BR>liczba w 
+  systemie szesnastkowym 
+  <LI><A name=desc_char_oct_3>2.5.3.3</A> <B>liczba_osemkowa_3</B><BR>liczba w 
+  systemie osemkowym o długości nie większej niż 3 znaki<BR>
+  <LI><A name=desc_char_spec>2.5.3.4</A> <B>znak_spec</B><BR>
+  <UL>
+    <LI><B>n</B> - znak nowej linii 
+    <LI><B>r</B> - znak powrotu karetki 
+    <LI><B>t</B> - znak tabulacji poziomej 
+    <LI><B>v</B> - znak tabulacji pionowej 
+    <LI><B>b</B> - skasowanie poprzedniego znaku 
+    <LI><B>a</B> - alarm 
+    <LI><B>\</B> - backslash </LI></UL>Jeżeli po znaku <B>\</B> (backslash) 
+  wystąpi znak który nie należy do żadnej z podanych kategorii : znak specjalny, 
+  liczba szesnastkowa lub ósemkowa to wstawiany jest ten znak. Przykład: '\k' == 
+  'k' , '\&amp;' == '&amp;'. </LI></UL>
+<H3><A name=desc_text>2.5.4</A> Stałe łańcuchowe</H3>
+<p>Stałą łańcuchową - łańcuchem tekstowym jest każdy ciąg znaków wewnątrz cudzysłowiów (<b>"</b>).
+<P>Składnia:<PRE><I>stała_lancuchowa</I>
+        : <B>"</B> znaki <B>"</B>
+        ;
+<A name=desc_char></A><I>znaki</I>
+        : znaki ZNAK
+		;
+</pre>
+<ul>
+	<li>Aby w łańcuchu tekstowym umieścić znak cudzysłowiu (<b>"</b>) należy umieścić sekwencję <b>\"</b>.
+	<li>W łańcucha tekstowego mogą występować fizyczne znaki nowej linii i są one interpretowane jako nowe
+	    linie.
+	<li>W stałej tesktowej nie może występować znak <b>'\0'</b> ponieważ wewnętrzna reprezentacja tych stałych
+	    i ogólnie tekstów opiera się na buforze zakońcxzonym znakiem '\0'.
+</ul>
+
+<H3><A name=desc_identifier>2.5.5</A> Identyfikatory</H3>
+<ul>
+	<li>Identyfikator jest nazwą obiektu języka - zmiennej lub typu. 
+	<li>Identyfikator musi zaczynać się od litery lub podkreślinka)
+	<li>Dalsze znaki ident\yfikatora to litery, cyfry lub podkreślnik.
+	<li>Rozróżniana jest wielkość liter.
+	<li>Wyrażenie regularne opisujące identyfikatory: 
+	<pre>[_[:alpha:]][_[:digit:][:alpha:]]*</pre>
+	Gdzie [:alpha:] i [:digit:] to odpowiednie dla konkretneej lokalozacji zestawy znaków : liter i cyfr.
+</ul>
+<P><A href="#toc">Zawartość</A> </P></DIV>
+<H1><A name=chapter_3>3.</A> Działanie programu</H1>
+<DIV class=tekst><A 
+href="#toc">Zawartość</A> </DIV>
+<H1><A name=chapter_4>4.</A> Biblioteka standardowa</H1>
+<DIV class=tekst>
+<P>Ten rozdział zawiera opis funkcji bibliotecznych dostępnych wraz z 
+implementacją języka. 
+<H2><A name=sect_4_1>4.1</A> IO - wejście/wyjście</H2>
+<P>Bibioteka IO dostępna jest po włączeniu pliku <B>io.xl</B>. Po włączeniu 
+pliku dostępny jest obiekt <I>io</I> który udostępnia metody dostępu do funkcji 
+wejścia wyjścia. 
+<P>Spis metod obiektu <I>io</I> 
+<H3><A name=desc_libio_basic_io>4.1.2</A> Podstawowe operacje wejścia i 
+wyjścia</H3>
+<P>
+<DL>
+  <DT><B>close</B>( <B>desc</B> ) 
+  <DD>Zamyka strumień wskazany przez <B>desc</B>.<BR>Zwraca zero, lub -1 w razie 
+  błędu. 
+  <DT><B>feof</B>( <B>desc</B> ) 
+  <DD>Sprawdza czy strumień <B>desc</B> ma ustawiony znaczni końca 
+  pliku.<BR>Zwraca prawde w przypadku gdy koniec pliku został osiągnięty, w 
+  przeciwnym pezypadku fałsz. </DD></DL>
+<H3><A name=desc_libio_open>4.1.3</A> Otwieranie strumieni i plików</H3>
+<P>
+<DL>
+  <DT><B>fopen</B>( <B>file_name</B>, <B>mode</B> = O_READ ) 
+  <DD>Otwiera plik o nazwie <B>name</B> używając <B>mode</B> jako trybu otwarcia 
+  pliku.<BR><B>mode</B> jest kombinacją stałych <A 
+  href="#desc_libio_open_mode">O_xxx</A>.<BR>Zwraca 
+  identyfikator strumienia, lub 0 w razie błędu. 
+  <DT><B>open</B>( <B>name</B>, <B>mode</B> = O_READ ) 
+  <DD>Otwiera strumień opisany przez <B>name</B>.<BR>Zwraca identyfikator 
+  strumienia, lub 0 w razie błędu. 
+  <DT><B>sopen</B>( <B>host</B>, <B>port</B> ) 
+  <DD>Otwiera połączenie TCP/IP z hostem <B>host</B> do portu 
+  <B>port</B>.<BR>Zwraca identyfikator strumienia, lub 0 w razie błędu. 
+  <DT><B>popen</B>( <B>command</B>, <B>mode</B> = O_READ ) 
+  <DD>Otwiera łącze komunikacyjne z procesem wywołanym przez polecenie 
+  <B>command</B>. Kierunek połączenie zależy od parametru <B>mode</B>: 
+  <UL>
+    <LI>O_READ : odczyt ze standardowego wyjścia procesu potomnego 
+    <LI>O_WRITE : zapis do standardowego wejścia procesu potomnego 
+  </LI></UL>Możliwa jest kombinacja tych stałych, a także innych <A 
+  href="#desc_libio_open_mode">O_xxx</A>.<BR>Zwraca 
+  identyfikator strumienia, lub 0 w razie błędu. </DD></DL>
+<H3><A name=desc_libio_text_io>4.1.4</A> Tekstowe operacje wejścia i 
+wyjścia</H3>
+<P>
+<DL>
+  <DT><B>gets</B>() 
+  <DD>Odczytuje linie ze standardowego wejścia.<BR>Zwraca wartość tekstową z 
+  odczytanym tekstem. 
+  <DT><B>fgets</B>( <B>desc</B> ) 
+  <DD>Odczytuje linie ze strumienia wskazanego przez <B>desc</B>.<BR>Zwraca 
+  wartość tekstową z odczytanym tekstem. 
+  <DT><B>puts</B>( <B>text</B> ) 
+  <DD>Wypisuje <B>text</B> na standardowe wyjście 
+  <DT><B>fputs</B>( <B>desc</B>, <B>text</B> ) 
+  <DD>Wypisuje <B>text</B> do strumienia wskazanego przez <B>desc</B>. 
+  <DT><B>to_file</B>( <B>name</B>, <B>text</B>, <B>mode</B> = O_NEW ) 
+  <DT><B>write_file</B> ( <B>name</B>, <B>text</B>, <B>mode</B> = O_NEW ) 
+  <DD>Wypisuje <B>text</B> do nowo tworzonego (ewentualnie nadpisywango) pliku 
+  <B>name</B> 
+  <DT><B>from_file</B>( <B>name</B> ) 
+  <DT><B>read_file</B>( <B>name</B> ) 
+  <DD>Odczytuje zawartość całego pliku tekstowego <B>name</B> i zwraca jego 
+  treść ako wartośc tekstową. </DD></DL>
+<H3><A name=desc_libio_open_mode>4.1.5</A> Tryb otwierania plików</H3>
+<P>
+<DL>
+  <DT><B>O_READ</B> 
+  <DD>Otwórz do odczytu. 
+  <DT><B>O_WRITE</B> 
+  <DD>Otwórz do zapisu. 
+  <DT><B>O_APPEND</B> 
+  <DD>Dopisuj na końcu pliku. 
+  <DT><B>O_CREAT</B> 
+  <DD>Utwórz jeśli plik o podanej nazwie nie istnieje. 
+  <DT><B>O_EXCL</B> 
+  <DD>Nie otwieraj jeżeli plik o podanej nazwie istnieje. 
+  <DT><B>O_TRUNC</B> 
+  <DD>Jeżeli plik o podanej nazwie istnieje to obetnij go do długości zero. 
+  <DT><B>O_TEXT</B> 
+  <DD>Ustaw tryb odczytu na tekstowy. Ma znaczenie tylko na niktórych 
+  platformach. 
+  <DT><B>O_BINARY</B> 
+  <DD>Ustaw tryb odczytu na binarny. <BR>Ma znaczenie tylko na niktórych 
+  platformach. 
+  <DT><B>O_NODELAY</B> 
+  <DD>Otwórz w trybie nieblokującym (asynchronicznym). <BR>Dostępne tylko na 
+  niektórych platformach. 
+  <DT><B>O_NEW</B> 
+  <DD>O_WRITE | O_TRUNC | O_CREAT <BR>Utwórz plik lub nadpisz istniejący, a 
+  potem otwórz do zapisu. </DD></DL>
+<P>
+<H3><A name=sect_4_2>4.2</A> SYSTEM - konwersjacja z systemem operacyjnym</H3>
+<P>
+<UL>
+  <LI>sys.process 
+  <UL>
+    <LI>sys.process.spawn <B>NOT IMPLEMENTED</B> 
+    <LI>sys.process.exec <B>NOT IMPLEMENTED</B> 
+    <LI>sys.process.wait <B>NOT IMPLEMENTED</B> 
+    <LI>sys.process.pid <B>NOT IMPLEMENTED</B> 
+    <LI>sys.process.uid <B>NOT IMPLEMENTED</B> 
+    <LI>sys.process.gid <B>NOT IMPLEMENTED</B> </LI></UL>
+  <LI>sys.time 
+  <UL>
+    <LI>sys.time.get <B>NOT IMPLEMENTED</B> 
+    <LI>sys.time.set <B>NOT IMPLEMENTED</B> 
+    <LI>sys.time.get_file_modify <B>NOT IMPLEMENTED</B> 
+    <LI>sys.time.get_file_access <B>NOT IMPLEMENTED</B> 
+    <LI>sys.time.get_file_create <B>NOT IMPLEMENTED</B> 
+    <LI>sys.time.time <B>NOT IMPLEMENTED</B> </LI></UL>
+  <LI>sys.info 
+  <UL>
+    <LI>sys.info.name <B>NOT IMPLEMENTED</B> 
+    <LI>sys.info.arch <B>NOT IMPLEMENTED</B> </LI></UL>
+  <LI>sys.security 
+  <UL>
+    <LI>sys.security.user.name <B>NOT IMPLEMENTED</B> 
+    <LI>sys.security.user.login <B>NOT IMPLEMENTED</B> 
+    <LI>sys.security.user.home_directory <B>NOT IMPLEMENTED</B> 
+    <LI>sys.security.user.uid <B>NOT IMPLEMENTED</B> 
+    <LI>sys.security.user.gid <B>NOT IMPLEMENTED</B> </LI></UL></LI></UL>
+<P><A href="#toc">Zawartość</A> </P></DIV>
+<H1><A name=chapter_5>5.</A> Przykłady</H1>
+<DIV class=tekst><A 
+href="#toc">Zawartość</A> </DIV></DIV>
+<TABLE bgColor=#7070f0 border=0 cellPadding=2 cellSpacing=0 width="100%">
+  <TBODY>
+  <TR>
+    <TD align=left bgColor=#7070f0><FONT color=white><I>Design by <A 
+      href="mailto:zzbigg@o2.pl"><B>Trurl</B></A></I></FONT> 
+  </TD></TR></TBODY></TABLE><!--
+</BODY></HTML>

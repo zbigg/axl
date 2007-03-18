@@ -1,0 +1,72 @@
+#!/usr/bin/env axl
+#
+# File:		sample/matrix.xl
+#
+# Id:		$Id: matrix.xl 1.1 04/01/28 21:18:13+01:00 zbigg@nowy.dom $
+#
+# Copyright:
+#
+#   This program is Copyright(c) Zbigniew Zagorski 2003,
+#   All rights reserved, and is distributed as free software under the
+#   license in the file "LICENSE", which is included in the distribution.
+
+#
+# TODO: Comment this out.
+#
+{
+matrixNew = func( n,m ) {
+    var mtx = new;
+    for( var row = 1; row <= n; row += 1)
+        mtx[row] = new;
+    mtx.n = n;
+    mtx.m = m;
+    return mtx;
+};
+matrixMul = func( a,b ) {
+    if( a.m != b.n ) {
+        echo "matrix dimesions doesn't fit\n";
+        return 0;
+    };
+    var mr = matrixNew( a.n, b.m );
+    for( var row = 1; row <= mr.n; row += 1 )
+        for( var col = 1; col <= mr.m; col += 1 ) {
+            var tmp = 0.0;
+            for( var k = 1; k <= a.m ; k += 1 )
+                tmp += a[row][k] * b[k][col];
+		   mr[row][col] = tmp;
+	    }; // koniec for(col ...
+    return mr;
+};
+echoMatrix = func ( a ) {
+    var txt = "";
+    for( var row = 1; row <= a.n; row+=1 ) {
+        var row_txt = "[";
+        for( var col = 1; col <= a.m; col+=1 )
+            row_txt += " " + a[row][col];
+        txt += row_txt + " ]\n";
+    };  // koniec for(row ...
+    echo txt;
+};
+matrixSetRow3 = func(m,r, a,b,c) {
+   m[r][1] = a; m[r][2] = b; m[r][3] = c;
+};
+
+var a = matrixNew(3,3);
+var b = matrixNew(3,3);
+
+matrixSetRow3(a,1,  1,2,3);
+matrixSetRow3(a,2,  4,5,6);
+matrixSetRow3(a,3,  7,8,9);
+
+matrixSetRow3(b,1,  1,2,3);
+matrixSetRow3(b,2,  4,5,6);
+matrixSetRow3(b,3,  7,8,9);
+
+var c = matrixMul(a,b);
+echo "A=\n";
+echoMatrix(a);
+echo "B=\n";
+echoMatrix(b);
+echo "Result of \"A*B\":\n";
+echoMatrix(c);
+};

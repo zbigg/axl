@@ -1,0 +1,65 @@
+#!/usr/bin/axl
+include "unix";
+include "cgi.xl";
+include "io";
+
+with (doc_template =  new ) {
+    name	= "template";
+    extension	= "html";
+    keywords	= "Zbigniew Zagórski, Strona domowa";
+    encoding	= "iso-8859-2";
+    description = "";
+    author	= "Zbigniew Zagórski";
+    email	= "longmanz@polbox.com";
+    doctype	= "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">";
+    mime_type	= "text/html";
+    title	= "Empty HTML document";
+    body 	=
+{?\
+    <BODY>
+	Empty HTML document
+    </BODY>
+?};
+    header	= func() { with(this)
+	return {?\
+$doctype;
+<HTML>
+    <HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="$mime_type;; charset=$encoding;">
+	$keywords ? {?<META NAME="Keywords" CONTENT="$keywords;">?} : "";
+	<META NAME="Generator" CONTENT="XL CGITools">
+	$description ? {?<META NAME="Description" CONTENT="$description;">?} : "";
+	<META NAME="author" CONTENT="$author;">
+	<TITLE>$title;</TITLE>
+    </HEAD>
+?};
+    };
+    foot	= func() { with(this)
+	return {?
+</HTML>
+?};
+    };
+}; // with( doc )
+
+new_html_doc = func( name )
+{
+    _nd =( copy doc_template );
+    _nd.name = name;
+    return _nd;
+};
+url	= func( name ) {
+    return output_file 
+	? name+".xl" 
+	: name+".html";
+};
+output_document = func( doc ) 
+{
+    if( output_file ) with( doc )
+	io.to_file(name+"."+extension, header() + body + foot() )
+    else with( cgi ) with( doc ) echo 
+	      content_type(mime_type,encoding)
+	    + finish_header()
+	    + header() 
+	    + body 
+	    + foot();
+};

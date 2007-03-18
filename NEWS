@@ -1,0 +1,32 @@
+This file shows changes between release versions of AXL.
+
+Version 0.1.15 Wed 10 Dec 2003 15:16:42 CET
+	* new install directory structure
+	* new source directory structrute
+	* (grammar): added new object_type construct
+		now can create "array"
+	* (modules) new sqlite module, but without AXL header
+
+Version 0.1.13
+	* nothing yet 
+Version 0.1.12 Fri 27 Jun 2003 22:13:42 CEST
+	* added "var" and "array" keywords and local stack frame variables 
+	  and arrays, and so there are "typical" arrays and compile-time
+	  memory allocation
+
+Version 0.1.11  Wed 30 Apr 2003 16:52:02
+	* lot_of_files: removed almost all memory leaks
+
+Version 0.1.10  Tue 25 Mar 2003 23:50:33
+	* -S|--output-asm: option to axl
+	* fixed buf: "can't do ungetc'
+	* rebuild make system: add --enable-debug and allow to build in different directory
+
+Version 0.1.9 	Tue 23 Jan 2003 00:15:16
+
+    * fixed bug which caused: f(a) + f(c) <==> to f(c) + f(c)
+    * internal: implemented new calling convention
+
+Version 0.1.8 INITIAL
+    * All is new, so it's impossible to describe all.
+    * But its important IT WORKS !!

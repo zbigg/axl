@@ -1,0 +1,237 @@
+<reference>
+    <title>Old AXL API Reference</title>
+    
+<refentry id="xl-parse">
+<refmeta>
+    <refentrytitle>xl_parse</refentrytitle>
+    <manvolnum>3</manvolnum>
+    <refmiscinfo>AXL API</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+    <refname>xl_parse</refname>
+    <refname>xl_fparse</refname>
+    <refname>xl_strparse</refname>
+    <refpurpose>parse XL source file</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+    <funcsynopsis>
+	<funcsynopsisinfo>
+#include &lt;xlang.h&gt;
+	</funcsynopsisinfo>
+	
+	<funcprototype>
+	    <funcdef>xl_code <function>xl_parse</function></funcdef>
+	    <paramdef>ZSTREAM <parameter>stream</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>xl_code <function>xl_fparse</function></funcdef>
+	    <paramdef>const char* <parameter>file</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>xl_code <function>xl_strparse</function></funcdef>
+	    <paramdef>const char* <parameter>code</parameter></paramdef>
+	</funcprototype>
+    </funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1> <title>Description</title>
+<para>
+Functions <function>xl_parse</function>, <function>xl_fparse</function>
+<function>xl_strparse</function> compile XL language code into bytecode
+that can be run by <function>xlvm_create_thread</function>.
+</para>
+</refsect1>
+
+<refsect1> <title>Return values</title>
+<para>
+some text
+</para>
+</refsect1>
+
+<refsect1> <title>Errors</title>
+<para>
+some text
+</para>
+</refsect1>
+
+<refsect1> <title>See also</title>
+<para>
+some text
+</para>
+</refsect1>
+
+</refentry>
+<refentry id="xlv-set">
+
+<refmeta>
+    <refentrytitle>xlv_set</refentrytitle>
+    <manvolnum>3</manvolnum>
+</refmeta>
+
+<refnamediv>
+    <refname>xl_set_int</refname>
+    <refname>xl_set_float</refname>
+    <refname>xl_set_str</refname>
+    <refname>xl_set_ptr</refname>
+    <refpurpose>put value into VALUE object</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+    <funcsynopsis>
+	<funcsynopsisinfo>
+#include &lt;xlang.h&gt;
+	</funcsynopsisinfo>
+	
+	<funcprototype>
+	    <funcdef>int <function>xl_set_int</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter>,
+		xl_integer <parameter>i</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>int <function>xl_set_float</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter>,
+	    xl_float <parameter>f</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>int <function>xl_set_str</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter>,
+	    const char* <parameter>s</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>int <function>xl_set_strn</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter>,
+	    const char* <parameter>s</parameter>,
+	    int <parameter>nchars</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>int <function>xl_set_ptr</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter>,
+		void* <parameter>p</parameter>,
+		int <parameter>type</parameter></paramdef>
+	</funcprototype>
+    </funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1> <title>Description</title>
+<para>
+Function <function>xlv_set_int</function> set value pointed by 
+<parameter>v</> to contain integer value <parameter>i</>.
+</para>
+<para>
+Function <function>xlv_set_float</function> set value pointed by 
+<parameter>v</> to contain floating point value <parameter>f</>.
+</para>
+<para>
+Function <function>xlv_set_str</function> set value pointed by 
+<parameter>v</> to contain character string value <parameter>s</>.
+Function <function>xlv_set_strn</function> acts like 
+<function>xlv_set_str</function> but copy only first 
+<parameter>nchars</> characters.
+
+</para>
+</refsect1>
+
+<refsect1> <title>Return values</title>
+<para>
+All of above functions return -1 on error.
+</para>
+</refsect1>
+
+<refsect1> <title>Errors</title>
+<para>
+Only possible error is when there is no enough memory to allocate
+new string in <function>xlv_str</function> or <function>xlv_strn</function>.
+</para>
+</refsect1>
+
+<refsect1> <title>See also</title>
+<para>
+some text
+</para>
+</refsect1>
+
+</refentry>
+</reference>
+
+<!--
+<refentry id="xlv-set">
+
+<refmeta>
+    <refentrytitle>xl_parse</refentrytitle>
+    <manvolnum>3</manvolnum>
+</refmeta>
+
+<refnamediv>
+    <refname>xl_set_int</refname>
+    <refname>xl_set_float</refname>
+    <refname>xl_set_str</refname>
+    <refname>xl_set_ptr</refname>
+    <refpurpose>put value into VALUE object</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+    <funcsynopsis>
+	<funcsynopsisinfo>
+#include &lt;xlang.h&gt;
+	</funcsynopsisinfo>
+	
+	<funcprototype>
+	    <funcdef>int <function>xl_set_int</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter></paramdef>
+	    <paramdef>xl_integer <parameter>i</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>int <function>xl_set_float</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter></paramdef>
+	    <paramdef>xl_float <parameter>f</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>int <function>xl_set_str</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter></paramdef>
+	    <paramdef>const char* <parameter>s</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>int <function>xl_set_strn</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter></paramdef>
+	    <paramdef>const char* <parameter>s</parameter></paramdef>
+	    <paramdef>int <parameter>nchars</parameter></paramdef>
+	</funcprototype>
+	<funcprototype>
+	    <funcdef>int <function>xl_set_ptr</function></funcdef>
+	    <paramdef>xl_value <parameter>v</parameter></paramdef>
+	    <paramdef>void* <parameter>p</parameter></paramdef>
+	    <paramdef>int <parameter>type</parameter></paramdef>
+	</funcprototype>
+    </funcsynopsis>
+</refsynopsisdiv>
+
+<refsect1> <title>Description</title>
+<para>
+Functions <function>xl_parse</function>, <function>xl_fparse</function>
+<function>xl_strparse</function> compile XL language code into bytecode
+that can be run by <function>xlvm_create_thread</function>.
+</para>
+</refsect1>
+
+<refsect1> <title>Return values</title>
+<para>
+some text
+</para>
+</refsect1>
+
+<refsect1> <title>Errors</title>
+<para>
+some text
+</para>
+</refsect1>
+
+<refsect1> <title>See also</title>
+<para>
+some text
+</para>
+</refsect1>
+
+</refentry>
+-->

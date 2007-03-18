@@ -1,0 +1,194 @@
+#!/bin/sh
+#
+# File:		axl_config.in
+#
+# Id:		$Id: axl_config.in 1.4 04/05/22 20:13:21+02:00 zbigg@veinard.dom $
+#
+# Project:	axl
+#
+#  Note: axl_config is generated from axl-config.in, by configure script.
+#
+######################
+##
+##  =Command axl_config
+##    	script to get information about the installed version of AXL
+##
+##  =Synopsis
+##   | axl_config --prefix    | --bindir | --libdir | --includedir |
+##   |            --pkglibdir | pkgincludedir |
+##   |            --ldflags   | --cflags | --env |
+##   |            --configure
+##
+##  =Description
+##	<axl_config> is tool to get information necessary to compile/link
+##	programs against AXL library. To compile program with the AXL library
+##	you should use:
+##
+##	| cc `axl_config --cflags` myprog.c -o myprog.o
+##
+##	To link program with the AXL library
+##	you should use:
+##
+##	| cc myprog.o `axl_config --ldflags` -o myprog
+##
+##	To link AXL module with the AXL library
+##	you should use:
+##
+##	| cc --shared mymodule.o `axl_config --mod-ldflags` -o myprog.so
+##
+##	If you want to add include and library directories to your compiler
+##	environment execute commands that are returned by axl_config --env.
+##	For example:
+##
+##	| axl_config --env >> ~.bashrc
+##
+##
+##  =Options
+##	<axl_config> accepts the following options:
+##
+##	* --prefix	- show build prefix
+##	* --bindir	- show build binaries directory
+##	* --libdir	- show build libraries directory
+##	* --pkglibdir	- show build package libraries directory
+##	* --pkgincdir	- show build package include directory
+##	* --version	- show installed version of package
+##	* --cflags	- show flags required to compile C/C++ program that
+##			  uses axl
+##	* --libs	- show flags required to link program that
+##			  uses axl
+##	* --env		- show environment setting that
+##
+##  =Author
+##     Zbigniew Zagorski <zzbigg@o2.pl>.
+##
+
+version=@VERSION@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+configure=@configure@
+bindir=@bindir@
+libdir=@libdir@
+includedir=@includedir@
+pkglibdir="${libdir}/@PACKAGE@"
+pkgincludedir="${includedir}/@PACKAGE@"
+
+static_libs=
+lib_type=xl
+
+libs=`echo "@PROG_LIBS@" | sed -e "s/ -s //"`
+mod_libs=`echo "@MODULES_LIBS@" | sed -e "s/ -s //"`
+cflags="-I${includedir}"
+
+ldflags="-L${libdir} ${libs}"
+mod_ldflags="-L${libdir} ${mod_libs}"
+
+usage()
+{
+   cat <<EOF
+Usage: axl_config [OPTIONS]
+
+Options:
+	--prefix	show build prefix
+	--bindir	show build binaries directory
+	--libdir	show build libraries directory
+	--pkglibdir	show build package libraries directory
+	--pkgincdir	show build package include directory
+	--version	show installed version of package
+	--cflags	show flags required to compile C/C++ program that
+			uses @PACKAGE@
+	--libs		show flags required to link program that
+			uses @PACKAGE@
+	--mod-libs		show flags required to link module for
+			@PACKAGE@
+	--env		show environment setting that
+
+Report bugs to <zzagorski@wi.ps.pl>.
+EOF
+   exit $1
+}
+
+if test $# -eq 0; then
+   usage 1 1>&2
+fi
+
+while test $# -gt 0; do
+    case "$1" in
+    -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) optarg= ;;
+    esac
+
+    case $1 in
+	--prefix)
+	    echo $prefix
+	    exit 0
+        ;;
+
+	--bindir)
+	    echo $bindir
+	    exit 0
+        ;;
+
+        --libdir)
+	    echo $libdir
+	    exit 0
+        ;;
+
+        --includedir)
+	    echo $includedir
+	    exit 0
+        ;;
+
+        --pkglibdir)
+	    echo $pkglibdir
+	    exit 0
+        ;;
+
+        --pkgincludedir)
+	    echo $pkgincludedir
+	    exit 0
+        ;;
+
+        --version)
+	    echo $version
+	    exit 0
+        ;;
+
+
+        --cflags|--cxxflags)
+    	    echo $cflags
+	    exit 0
+        ;;
+
+        --mod-libs|--mod-ldflags)
+    	    echo $mod_ldflags
+	    exit 0
+        ;;
+      
+        --libs|--ldflags)
+	    echo $ldflags
+	    exit 0
+        ;;
+
+        --env)
+	    cat <<EOF
+# AXL:
+#   Environment add-on needed to use xl library and compile programs against
+#   it.
+export PATH="\$PATH:${bindir}"
+export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH:${libdir}"
+export LIBRARY_PATH="\$LIBRARY_PATH:${libdir}"
+export C_INCLUDE_PATH="\$C_INCLUDE_PATH:${includedir}"
+export CPLUS_INCLUDE_PATH="\$CPLUS_INCLUDE_PATH:${includedir}"
+EOF
+	    exit 0
+    	    ;;
+	--help)
+    	    usage 0
+	    ;;
+         *)
+    	    usage 1 1>&2
+    	;;
+
+    esac
+    shift
+done

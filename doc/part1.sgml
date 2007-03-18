@@ -1,0 +1,184 @@
+<!-- 							-->
+<!--   File:	part1.sgml				-->
+<!--							-->
+<!--   Id:	$Id: part1.sgml 1.4 04/03/13 02:54:02+01:00 zbigg@nowy.dom $					-->
+<!--							-->
+<!--   Purpose:  					-->
+<!--        	Part 1 of AXL Documentation 		-->
+<!--							-->
+<!--   		Introduction to AXL and AXL Report.	-->
+<!--							-->
+<part>
+    <title>Introduction</title>
+    <chapter><title>AXL? What is this?</title>
+<para>
+    AXL stands for Application EXtension Language. Originally it was 
+    designed as universal parser of documents containing variable values
+    and "include" statements.
+</para>
+    </chapter>
+
+<chapter>
+    <title>Language report</title>
+	<primary>Language</primary>
+	<secondary>report</secondary>
+    </indexterm>
+<para>
+    This section provides complete report of language syntax.
+    Section <emphasis>Syntax</emphasis> and <emphasis>Runtime behavior</emphasis> can be considered
+    as full report of stand AXL used as Application Extension Script.
+    Adding section <emphasis>Standard Library</emphasis> report provides description
+    of full featured application development tool.
+</para>
+<section><title>Syntax</title>
+    <para>
+	This section contains complete description of language syntax.
+	The Extended-BNF notation will be used for grammar report.
+    </para>
+    <section><title>Program</title>
+<para>EBNF notation: <synopsis>
+program ::= 
+      ( instruction <emphasis>;</emphasis> | include_stmt <emphasis>;</emphasis> )*
+    ;
+include_stmt ::=
+      <emphasis>include</emphasis> string_literal
+    | <emphasis>include</emphasis> string_literal <emphasis>safe</emphasis>
+</synopsis>
+</para>
+<para>
+    Description of symbols defined above.
+</para>
+</section>
+
+
+<section><title>Instruction</title>
+<para>EBNF notation: <synopsis>
+instruction ::=
+      expression
+    | complex_instruction
+    | block_instruction
+	
+block_instruction ::=
+      <emphasis>{</emphasis> (instruction ; )* <emphasis>}</emphasis>
+	
+complex_instruction ::=
+       <emphasis>if</emphasis> <emphasis>(</emphasis> expression <emphasis>)</emphasis> 
+	    instruction
+     [ <emphasis>else</emphasis>
+	    instruction ]
+    | <emphasis>while</emphasis> <emphasis>(</emphasis> expression <emphasis>)</emphasis> instruction
+    | <emphasis>do</emphasis> instruction <emphasis>while</emphasis> <emphasis>(</emphasis> expression <emphasis>)</emphasis>
+    | <emphasis>for</emphasis> <emphasis>(</emphasis> instruction <emphasis>;</emphasis> expression <emphasis>;</emphasis> instruction <emphasis>)</emphasis> instruction
+    | <emphasis>switch</emphasis> <emphasis>(</emphasis> expression <emphasis>)</emphasis> <emphasis>{</emphasis> 
+            switch_body
+        <emphasis>}</emphasis>
+    | primary expression_list_ne_fnu
+    | <emphasis>echo</emphasis> expression_list_ne
+    | <emphasis>return</emphasis> expression?
+    | <emphasis>global</emphasis> primary
+
+switch_body ::=
+      (case_expression <emphasis>-></emphasis> instruction <emphasis>;</emphasis> ) * 
+      ( <emphasis>default</emphasis> <emphasis>-></emphasis> instruction <emphasis>;</emphasis> ) ?
+
+case_expression ::=
+      expression
+    | cmp_operator expression
+</synopsis>
+</para>
+<para>
+    Description of symbols defined above.
+</para>
+</section>
+
+<section><title>Expression</title>
+<para>EBNF notation: <synopsis>
+expression ::=
+      primary <emphasis>+=</emphasis> expression
+    | primary <emphasis>-=</emphasis> expression
+    | primary <emphasis>*=</emphasis> expression
+    | primary <emphasis>/=</emphasis> expression
+    | primary <emphasis>?=</emphasis> expression
+    | primary <emphasis>=</emphasis> expression
+    | alternative <emphasis>?</emphasis> expression? <emphasis>:</emphasis> expression
+    | alternative
+    
+alternative ::=
+      conjugation <emphasis>||</emphasis> alternative
+    | conjugation
+
+conjugation ::=
+      comparison <emphasis>&amp;&amp;</emphasis> conjugation
+    | comparison
+
+comparison ::=
+      addition cmp_operator comparison
+    | addition
+
+cmp_operator ::=
+      <emphasis>==</emphasis> | <emphasis>&gt;</emphasis> | <emphasis>&lt;</emphasis> | <emphasis>&gt;=</emphasis> | <emphasis>&lt;=</emphasis> | <emphasis>!=</emphasis>
+    
+addition ::=
+      addition <emphasis>+</emphasis> multiplication
+    | addition <emphasis>-</emphasis> multiplication
+    | multiplication
+    
+multiplication ::=
+      multiplication <emphasis>*</emphasis> value
+    | multiplication <emphasis>/</emphasis> value
+    | multiplication <emphasis>%</emphasis> value
+    | value
+    
+value ::= primary | unary_value     
+
+unary_value ::=
+      <emphasis>!</emphasis>  value
+    | <emphasis>~</emphasis>  value
+    | <emphasis>-</emphasis>  value
+    | <emphasis>++</emphasis> value
+    | <emphasis>--</emphasis> value
+    | <emphasis>copy</emphasis> value
+    
+primary ::=
+      immediate
+    | identifier
+    | case | new
+    | <emphasis>builtin</emphasis> string_literal <emphasis>safe?</emphasis>
+    | <emphasis>{?</emphasis> text_with_expr <emphasis>?}</emphasis>
+    | <emphasis>(</emphasis> expression <emphasis>)</emphasis>
+    | primary <emphasis>++</emphasis>
+    | primary <emphasis>--</emphasis>
+    | primary <emphasis>.</emphasis> identifier
+    | primary <emphasis>[</emphasis> expression <emphasis>]</emphasis> 
+    | <emphasis>func</emphasis> <emphasis>(</emphasis> parameter_list <emphasis>)</emphasis> block_instruction
+    | <emphasis>func</emphasis> <emphasis>(</emphasis> parameter_list <emphasis>)</emphasis> <emphasis>-></emphasis> <emphasis>(</emphasis> expression <emphasis>)</emphasis>
+    | <emphasis>func</emphasis> <emphasis>(</emphasis> parameter_list <emphasis>)</emphasis> <emphasis>-></emphasis> <emphasis>{?</emphasis> text_with_expr <emphasis>?}</emphasis>
+    
+immediate ::=
+      integer_literal
+    | floating_literal
+    | string_literal
+    | char_literal
+    
+text_with_expr ::= --- see description ---
+</synopsis>
+</para>
+</section>
+
+<!--
+    <section><title>Program</title>
+<para>EBNF notation: <synopsis>
+
+</synopsis>
+</para>
+    </section>
+-->
+</section>
+</chapter>
+<chapter>
+    <title>Runtime behavior</title>
+    <para>
+	hello
+    </para>
+</chapter>
+</part>

@@ -1,0 +1,276 @@
+######################################
+#
+# File		: Makefile.in
+# Id            : $Id: Makefile.in 1.9 04/05/22 20:40:51+02:00 zbigg@veinard.dom $
+# Author	: Zbigniew Zagorski <zzbigg@o2.pl>
+# Type		: GNU Make
+# Source type	: library
+#
+######################################
+#
+# Library: xl
+#
+# Options
+#
+# Targets:
+#    <default>	: Compile library.
+#    install	: Install libary and headers.
+#                 Require root access.
+#    static	: Compile static linked library.
+#    shared	: Compile shared library.
+#    clean	: Remove all intermediate files .
+#    clean_all	: Remove all including libary and depandency files.
+#    dist_clean : Remove all to fit distribution.
+#
+######################################
+
+PROFILE=@PROFILE@
+SHARED=@SHARED@
+DEBUG=@DEBUG@
+
+SHARED_EXT=@SHARED_EXT@
+STATIC_EXT=.a
+LIBNAME=@XL_LIBNAME@
+VERSION=@VERSION@
+VERSION_MAJOR=@VERSION_MAJOR@
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+top_builddir = ../..
+LIBDIR=$(top_builddir)/lib
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+LIBXL_NAME=@LIBXL_NAME@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+
+CC=@CC@
+CPP = @CPP@
+LD=@CC@
+AR=ar
+RANLIB=@RANLIB@
+LN_S = @LN_S@
+YACC = @YACC@
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+DLLTOOL=@DLLTOOL@
+mkinstalldirs = $(SHELL) $(top_srcdir)/misc/mkdirs.sh
+
+CINCLUDE= -I$(srcdir) -I$(top_builddir) -I$(top_srcdir)/common -I$(top_srcdir)/include 
+
+CFLAGS=@DEFS@ @CFLAGS@ $(CINCLUDE)
+
+# Flags for linker needed to build shared library
+LDFLAGS=-shared -L$(LIBDIR)  @LIBXL_LIBS@
+
+# Flags for ar needed to build static library
+ARFLAGS=
+
+#Public header files: these files will be copied to INST_DIR_INC when
+#	installing develompent package
+INCLUDES=
+INCLUDES_PKG=
+
+#Sources for library
+SOURCES_C=\
+    axl_i.c\
+    builtin.c\
+    code.c\
+    codegen.c\
+    context.c\
+    except.c\
+    frame.c\
+    grammar.c\
+    lex.c\
+    lexfunc.c\
+    lexerr.c\
+    objarray.c\
+    object.c\
+    objenv.c\
+    objres.c\
+    proc.c\
+    symbol.c\
+    symtab.c\
+    valmeth.c\
+    valoper.c\
+    value.c\
+    vm.c\
+    xl.c\
+    xlasm.c\
+    xldebug.c\
+    xlstr.c\
+    xlmap.c\
+    xltools.c
+
+SOURCES_CC=
+SOURCES_CPP=
+
+SOURCES=$(SOURCES_C) $(SOURCES_CC) $(SOURCES_CPP)
+
+LIB_OUTPUT_DYN=$(LIBDIR)/lib$(LIBNAME)$(VERSION_MAJOR).$(SHARED_EXT)
+LIB_OUTPUT_DLL=$(LIBDIR)/$(LIBNAME)$(VERSION_MAJOR).dll
+
+LIB_OUTPUT_ST=$(LIBDIR)/lib$(LIBNAME)$(VERSION_MAJOR).a
+
+OBJECTS_C=$(SOURCES_C:.c=.o)
+OBJECTS_CC=$(SOURCES_CC:.cc=.o)
+OBJECTS_CPP=$(SOURCES_CPP:.cpp=.o)
+
+OBJECTS=$(OBJECTS_C) $(OBJECTS_CC) $(OBJECTS_CPP)
+
+default: all
+
+ifeq "@CYGWIN@" "yes"
+BUILD_DLL=1
+endif
+
+ifeq "@MINGW32@" "yes"
+BUILD_DLL=1
+endif
+
+ifeq ($(SHARED),yes)
+all: shared
+
+ifeq ($(BUILD_DLL),1)
+LIB_OUTPUT=$(LIB_OUTPUT_DLL)
+inst_lib: inst_dll
+$(LIB_OUTPUT_ST): $(LIB_OUTPUT_DLL)
+else
+LIB_OUTPUT=$(LIB_OUTPUT_DYN)
+inst_lib: inst_lib_shared
+
+endif
+
+else
+
+LIB_OUTPUT=$(LIB_OUTPUT_ST)
+
+all: static
+
+inst_lib: inst_lib_static
+
+endif
+
+PRODUCTS=$(LIB_OUTPUT)
+
+shared : $(LIB_OUTPUT)
+static  : $(LIB_OUTPUT_ST)
+
+#
+# The main build
+#
+
+$(LIB_OUTPUT_DLL): $(OBJECTS) libxl.def
+	-$(mkinstalldirs) $(LIBDIR)
+	$(LD) $^ $(LDFLAGS) -o $@
+	$(DLLTOOL) --def $(srcdir)/libxl.def --dll $@ --output-lib $(LIB_OUTPUT_ST)
+
+$(LIB_OUTPUT_DYN): $(OBJECTS)
+	-$(mkinstalldirs) $(LIBDIR)
+	$(LD) $(LDFLAGS)  -nostartfiles $^ -o $@
+
+$(LIB_OUTPUT_ST): $(OBJECTS)
+	-$(mkinstalldirs) $(LIBDIR)
+	$(AR) cru $(ARFLAGS) $(CLIB) $@ $^
+	$(RANLIB) $(LIB_OUTPUT_ST)
+
+$(srcdir)/grammar.c $(srcdir)/grammar.h: grammar.y
+	$(YACC) -d $<
+	mv -f y.tab.c $(srcdir)/grammar.c
+	mv -f y.tab.h $(srcdir)/grammar.h
+
+#
+#	Installation
+#
+
+install: inst_dev
+
+inst_dll: $(LIB_OUTPUT_DLL) $(LIB_OUTPUT_ST)
+	$(mkinstalldirs) $(bindir)
+	$(mkinstalldirs) $(libdir)
+	$(INSTALL) $(LIB_OUTPUT_DLL) $(bindir)
+	$(INSTALL) $(LIB_OUTPUT_ST) $(libdir)
+
+
+inst_lib_shared: $(LIB_OUTPUT_DYN)
+	$(mkinstalldirs) $(libdir)
+	$(INSTALL) $(LIB_OUTPUT_DYN) $(libdir)
+
+inst_lib_static: $(LIB_OUTPUT_ST)
+	$(mkinstalldirs) $(libdir)
+	$(INSTALL) $(LIB_OUTPUT_ST) $(libdir)
+
+inst_dev: inst_inc inst_lib inst_doc
+
+inst_inc:
+	$(mkinstalldirs) $(includedir)
+	$(mkinstalldirs) $(includedir)/axl
+	@for FILE in $(top_srcdir)/include/axl/*.h ; do 	\
+	    echo "$$FILE ..." ;				\
+	    $(INSTALL_DATA) $$FILE $(includedir)/axl ;	\
+	done	
+	$(mkinstalldirs) $(includedir)/zcompat
+
+inst_doc : doc
+	@echo Installing documentation
+	@echo WARNING: nothing done
+
+doc:
+	@echo Making documentation
+	@echo Here put your code that creates documentation in doc/
+	@echo WARNING: nothing done
+	@if [ ! -d doc ]; then mkdir doc; fi
+
+#
+# Cleaning
+#
+clean:
+	rm -f $(OBJECTS) *.o
+
+clean_all: clean
+	-rm -f $(PRODUCTS)
+	-rm -f *.d *.bak *.~*
+	-rm -f core *.so *.so.* *.a *.~*
+
+distclean: clean_all
+	rm -f Makefile
+
+
+
+#
+# Keep Makefile recent
+#
+
+${top_builddir}/config.h: ${top_srcdir}/config.h.in
+	@echo Rebuilding config.h
+	(cd $(top_builddir) ; ./config.status ; )
+
+${top_srcdir}/configure  $(top_builddir)/config.status: ${top_srcdir}/configure.in
+	@echo Rebuilding configure
+	(cd ${top_srcdir}; autoconf ; )
+	(cd ${top_builddir}; ./config.status --recheck ; )
+
+Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
+	@echo Makefile.in or configure changed, must reconfigure
+	(cd $(top_builddir) ; ./config.status ; )
+
+
+-include $(OBJECTS:.o=.d)
+
+

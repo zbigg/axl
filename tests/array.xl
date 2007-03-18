@@ -1,0 +1,24 @@
+#!/usr/bin/env axl
+#
+# File:		tests/template.xl
+# Purpose:	template of test
+#		
+#
+
+
+show_array = func(a, prefix="") {
+    var c = a.count;
+    echo prefix," a->count    = ",c,"\n";
+    echo prefix," a->capacity = ",a.capacity,"\n";
+    for(var i = 0; i < c; i+=1 ) {
+	echo prefix, " elem[",i,"] = ",a[i],"\n";
+    };
+};
+
+var a1 = new array;
+a1.append(1,2,3);
+show_array(a1,"after append");
+a1.prepend(3,2,1);
+show_array(a1,"after prepend");
+a1.insert(3,100);
+show_array(a1,"after insert");

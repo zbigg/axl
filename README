@@ -1,0 +1,68 @@
+This is README file for
+
+		AXL
+
+		The Applicaion eXtension Language.
+
+0.
+    0.1
+	Copying information can be found in ./LICENSE.
+    0.2
+	Information about authors, contributors can be found in
+	./AUTHORS.
+    0.3
+	For how to install information see ./INSTALL.
+    0.4
+	Development status of this package is in ./STATUS file.
+    0.5
+	Currently the homepage of AXL is
+	    http://axlhome.host.sk/axl.html
+	but it's only in Polish which will be translated as fast as
+	possible.
+
+1.
+    AXL is a interpreted language similar to C/Perl/PHP/Python but
+    obviously different in some features.
+
+    AXL is intended to be embedded in large applications that need
+    scripting.
+
+    Well that was wishes of author and that is the vision that i'm
+    following. Currently AXL is only perl-like script language
+    which can be invoked from script files using command line:
+	axl scriptname parameters
+    or
+	axl -e 'script body' parameters
+
+    and so on.
+
+    You can obviously write script and begin it with line
+	#! /usr/local/bin/axl
+    or
+	#! /usr/bin/env axl
+
+    The second option relies on env program which will search for axl
+    interpreter in PATH environment. Note that env is a GNU extension
+    and is possible that not all unices will have installed.
+
+2.
+    For documentation how to use it see documentation in doc/html
+    which after succesfull configuration can be built by executing
+    make int doc/ directory.
+
+    Unfortunatelly to build documentation you must have installed lot of
+    programs that deal with DocBook:
+	* DocBook v3.1 DTD
+	* DocBook Utils
+	* DocBook DSSSL Stylesheets
+	* Jade
+	* TeTeX and LateX - to build manpages and postscript version
+	* and some programss that i've forgot to mention
+
+    If you don't have them and you don't want to install them you
+    can dowload the latest documentaion from this URL
+	http://axlhome.host.sk/res/axl/dochtml
+    There should be tarred and gzipped version of documentation.
+
+
+$Id: README 1.1 03/10/16 00:02:53+02:00 zbigg@marl.(none) $
