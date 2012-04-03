@@ -138,7 +138,7 @@ LIBRARIES=$(MODULES:.c=.$(SHARED_EXT))
 all: shared
 
 inst_lib: inst_lib_shared
-
+CFLAGS += -fPIC
 else
 LIBRARIES=$(MODULES:.c=.o)
 

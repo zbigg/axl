@@ -1293,9 +1293,10 @@ int	xlf_call(
     xl_value	result
     );
 
+/*
 extern void* axl_malloc(size_t);
 extern void  axl_free(void*);
-
+*/
 #if !defined(HAVE_INLINE)
 
 #define xlv_can_write(v)	( !ZFL_ISSET( (v)->flags, XLVF_READ_ONLY ) )

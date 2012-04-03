@@ -180,7 +180,7 @@ AC_MSG_RESULT([ debug: $arg_debug, CFLAGS=$CFLAGS ])
 AC_MSG_CHECKING(for LIBNAME )
 AC_MSG_RESULT([ LIBNAME=$LIBNAME ])
 
-AC_SEARCH_LIBS(zprintf, [ $ZCOMPAT_NAMES ] ,
+AC_SEARCH_LIBS(zprintf, [zcompat ] ,
 	[  ],
 	[ AC_ERROR([zcompat library not found, it's required to build axl]) ]
 	)

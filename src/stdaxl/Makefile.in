@@ -119,7 +119,7 @@ LIB_OUTPUT=$(LIB_OUTPUT_DYN)
 
 all: shared
 inst_lib: inst_lib_shared
-
+CFLAGS += -fPIC
 else
 
 LIB_OUTPUT=$(LIB_OUTPUT_ST)

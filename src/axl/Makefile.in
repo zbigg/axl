@@ -86,7 +86,7 @@ LDFLAGS=@LDFLAGS@
 
 USELIBS_FLAGS=-L$(LIBDIR) -Wl,-rpath,$(LIBDIR)
 
-XLLDFLAGS=$(USELIBS_FLAGS) @PROG_LIBS@
+XLLDFLAGS=$(USELIBS_FLAGS) @PROG_LIBS@ -lzcompat
 
 # These programs are installed
 PROGRAMS=axl axl_config axl_createmod

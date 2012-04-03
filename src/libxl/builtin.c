@@ -46,7 +46,7 @@
 #endif
 
 static char	builtin_error[255] = "(success)";
-extern int	xl_builtin_is_ok;
+static int	xl_builtin_is_ok;
 
 static int	xl_builtin_init(void);
 static void	set_lib_path(void);

@@ -154,7 +154,7 @@ $(LIB_OUTPUT_ST): $(LIB_OUTPUT_DLL)
 else
 LIB_OUTPUT=$(LIB_OUTPUT_DYN)
 inst_lib: inst_lib_shared
-
+CFLAGS += -fPIC
 endif
 
 else

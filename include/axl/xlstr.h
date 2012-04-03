@@ -115,10 +115,10 @@ extern xl_str	xls_erase_blank (xl_str src);
 
 xl_str	xlsprintf(xl_str s,const char* fmt, ...);
 xl_str	xlsvprintf(xl_str s,const char* fmt, va_list ap);
-
+/*
 extern	void*	axl_malloc(unsigned int);
 extern	void	axl_free(void*);
-
+*/
 #if !defined(HAVE_INLINE) && !defined(__cplusplus)
 #define _xls_get( a )	((a)->first)
 #define _xls_str( a )	((a)->first)

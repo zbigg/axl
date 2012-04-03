@@ -35,11 +35,11 @@
 #define free mdmf_free
 #define strdup mdmf_strdup
 #endif
-
+DECL_DLL_ALLOC_VECT(axl)
 DEF_DLL_ALLOC_VECT_FUNC(axl)
 
-    SET_DLL_ALLOC_VECT_PR(axl,zpio);
-    SET_DLL_ALLOC_VECT_PR(axl,ztools);
+/*   SET_DLL_ALLOC_VECT_PR(axl,zpio);
+    SET_DLL_ALLOC_VECT_PR(axl,ztools);*/
 
 END_DLL_ALLOC_VECT_FUNC(axl)
 
